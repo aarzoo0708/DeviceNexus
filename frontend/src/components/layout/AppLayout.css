@@ -1,0 +1,27 @@
+.app-layout {
+  min-height: 100vh;
+}
+
+.main-area {
+  margin-left: var(--sidebar-width);
+
+  min-height: 100vh;
+}
+
+.page-content {
+  padding: 28px;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+  .main-area {
+    margin-left: 0;
+  }
+
+  .page-content {
+    padding: 20px 16px;
+  }
+
+}
