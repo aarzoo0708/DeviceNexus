@@ -1,17 +1,10 @@
 import AppLayout from "./components/layout/AppLayout";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
     <AppLayout>
-
-      <div>
-        <h1>Dashboard</h1>
-
-        <p>
-          Welcome to DeviceNexus.
-        </p>
-      </div>
-
+      <Dashboard />
     </AppLayout>
   );
 }
