@@ -1,5 +1,10 @@
 import "./Dashboard.css";
+
 import StatCard from "../components/dashboard/StatCard";
+import ServicePipeline from "../components/dashboard/ServicePipeline";
+import WarrantyAlert from "../components/dashboard/WarrantyAlert";
+import RecentActivity from "../components/dashboard/RecentActivity";
+import QuickActions from "../components/dashboard/QuickActions";
 
 function Dashboard() {
   return (
@@ -55,6 +60,22 @@ function Dashboard() {
         />
 
       </div>
+
+      <div className="dashboard-main-grid">
+
+  <ServicePipeline />
+
+  <WarrantyAlert />
+
+</div>
+
+<div className="dashboard-bottom-grid">
+
+  <RecentActivity />
+
+  <QuickActions />
+
+</div>
 
     </div>
   );
