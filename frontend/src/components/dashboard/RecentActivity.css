@@ -1,0 +1,122 @@
+.activity-card {
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-sm);
+
+  overflow: hidden;
+}
+
+.activity-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 22px 24px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.activity-header h2 {
+  font-size: 17px;
+
+  font-weight: 650;
+
+  color: var(--text-primary);
+}
+
+.activity-list {
+  padding: 8px 24px;
+}
+
+.activity-item {
+  position: relative;
+
+  display: flex;
+
+  gap: 14px;
+
+  padding: 14px 0;
+
+  border-bottom: 1px solid var(--border-light);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-dot {
+  width: 30px;
+  height: 30px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 9px;
+
+  background: var(--primary-light);
+
+  color: var(--primary);
+}
+
+.activity-dot.customer {
+  background: var(--info-light);
+  color: var(--info);
+}
+
+.activity-dot.request {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.activity-dot.repair {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.activity-dot.warranty {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+.activity-content {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+
+  min-width: 0;
+}
+
+.activity-content strong {
+  font-size: 12px;
+
+  font-weight: 600;
+
+  color: var(--text-primary);
+}
+
+.activity-content span {
+  font-size: 11px;
+
+  color: var(--text-secondary);
+}
+
+.activity-content small {
+  margin-top: 3px;
+
+  font-size: 10px;
+
+  color: var(--text-muted);
+}

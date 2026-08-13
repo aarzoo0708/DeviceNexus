@@ -1,0 +1,129 @@
+.quick-actions-card {
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-sm);
+
+  overflow: hidden;
+}
+
+.quick-actions-header {
+  padding: 22px 24px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.quick-actions-header h2 {
+  font-size: 17px;
+
+  font-weight: 650;
+
+  color: var(--text-primary);
+}
+
+.actions-list {
+  padding: 8px 12px;
+}
+
+.action-item {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 12px;
+
+  background: transparent;
+
+  border-radius: var(--radius-md);
+
+  text-align: left;
+
+  transition: var(--transition);
+}
+
+.action-item:hover {
+  background: var(--background);
+}
+
+.action-icon {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--radius-md);
+
+  font-size: 15px;
+
+  font-weight: 600;
+}
+
+.action-icon.customer {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.action-icon.device {
+  background: var(--info-light);
+  color: var(--info);
+}
+
+.action-icon.request {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.action-icon.followup {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.action-content {
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.action-content strong {
+  font-size: 12px;
+
+  font-weight: 600;
+
+  color: var(--text-primary);
+}
+
+.action-content span {
+  font-size: 10px;
+
+  color: var(--text-muted);
+}
+
+.action-arrow {
+  color: var(--text-muted);
+
+  font-size: 14px;
+
+  transition: var(--transition);
+}
+
+.action-item:hover .action-arrow {
+  color: var(--primary);
+
+  transform: translateX(2px);
+}
