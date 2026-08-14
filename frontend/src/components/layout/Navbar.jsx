@@ -1,22 +1,46 @@
 import "./Navbar.css";
+import { useLocation } from "react-router";
+
+const pageTitles = {
+  "/": "Dashboard",
+  "/customers": "Customers",
+  "/devices": "Devices",
+  "/service-requests": "Service Requests",
+  "/repairs": "Repairs",
+  "/warranty": "Warranty",
+  "/follow-ups": "Follow-ups",
+  "/interactions": "Interactions",
+  "/settings": "Settings",
+};
 
 function Navbar() {
+  const location = useLocation();
+
+  const currentPage =
+    pageTitles[location.pathname] || "Dashboard";
+
   return (
     <header className="navbar">
 
       {/* LEFT */}
       <div className="navbar-left">
 
-        <button className="menu-button">
+        <button
+          className="menu-button"
+          type="button"
+          aria-label="Toggle sidebar"
+        >
           ☰
         </button>
 
         <div className="page-title">
+
           <span className="breadcrumb">
             Workspace
           </span>
 
-          <h2>Dashboard</h2>
+          <h2>{currentPage}</h2>
+
         </div>
 
       </div>
@@ -44,10 +68,17 @@ function Navbar() {
       {/* RIGHT */}
       <div className="navbar-right">
 
-        <button className="icon-button">
+        <button
+          className="icon-button"
+          type="button"
+          aria-label="Notifications"
+        >
           🔔
+
           <span className="notification-dot"></span>
+
         </button>
+
 
         <div className="user-profile">
 

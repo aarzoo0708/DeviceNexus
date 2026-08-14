@@ -1,55 +1,92 @@
+import { NavLink } from "react-router";
+
 import "./Sidebar.css";
 
 const menuSections = [
   {
     title: "MAIN",
     items: [
-      { label: "Overview", icon: "⌂" }
-    ]
+      {
+        label: "Overview",
+        icon: "⌂",
+        path: "/",
+      },
+    ],
   },
 
   {
     title: "CUSTOMER MANAGEMENT",
     items: [
-      { label: "Customers", icon: "♙" },
-      { label: "Devices", icon: "▣" }
-    ]
+      {
+        label: "Customers",
+        icon: "♙",
+        path: "/customers",
+      },
+      {
+        label: "Devices",
+        icon: "▣",
+        path: "/devices",
+      },
+    ],
   },
 
   {
     title: "SERVICE OPERATIONS",
     items: [
-      { label: "Service Requests", icon: "⚡" },
-      { label: "Repairs", icon: "🔧" },
-      { label: "Warranty", icon: "◷" }
-    ]
+      {
+        label: "Service Requests",
+        icon: "⚡",
+        path: "/service-requests",
+      },
+      {
+        label: "Repairs",
+        icon: "🔧",
+        path: "/repairs",
+      },
+      {
+        label: "Warranty",
+        icon: "◷",
+        path: "/warranty",
+      },
+    ],
   },
 
   {
     title: "RELATIONSHIP",
     items: [
-      { label: "Follow-ups", icon: "✓" },
-      { label: "Interactions", icon: "💬" }
-    ]
-  }
+      {
+        label: "Follow-ups",
+        icon: "✓",
+        path: "/follow-ups",
+      },
+      {
+        label: "Interactions",
+        icon: "💬",
+        path: "/interactions",
+      },
+    ],
+  },
 ];
 
 function Sidebar() {
   return (
     <aside className="sidebar">
 
-      <div className="brand">
+      {/* BRAND */}
 
-        <div className="brand-icon">
-          ◈
+      <div className="sidebar-brand">
+        <div className="brand-mark">
+          D
         </div>
 
         <div>
-          <h1>DeviceNexus</h1>
-          <span>Service CRM</span>
+          <h2>DeviceNexus</h2>
+          <span>CRM PLATFORM</span>
         </div>
-
       </div>
+
+
+      {/* NAVIGATION */}
 
       <nav className="sidebar-navigation">
 
@@ -60,30 +97,30 @@ function Sidebar() {
             key={section.title}
           >
 
-            <p className="section-title">
+            <p className="menu-section-title">
               {section.title}
             </p>
 
             {section.items.map((item) => (
 
-              <button
-                className={`menu-item ${
-                  item.label === "Overview"
-                    ? "active"
-                    : ""
-                }`}
+              <NavLink
                 key={item.label}
+                to={item.path}
+                end={item.path === "/"}
+                className={({ isActive }) =>
+                  `menu-item ${isActive ? "active" : ""}`
+                }
               >
 
                 <span className="menu-icon">
                   {item.icon}
                 </span>
 
-                <span>
+                <span className="menu-label">
                   {item.label}
                 </span>
 
-              </button>
+              </NavLink>
 
             ))}
 
@@ -93,15 +130,29 @@ function Sidebar() {
 
       </nav>
 
-      <div className="sidebar-footer">
 
-        <button className="menu-item">
+      {/* BOTTOM */}
+
+      <div className="sidebar-bottom">
+
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            `menu-item ${isActive ? "active" : ""}`
+          }
+        >
           <span className="menu-icon">
             ⚙
           </span>
 
-          Settings
-        </button>
+          <span className="menu-label">
+            Settings
+          </span>
+        </NavLink>
+
+        <div className="sidebar-version">
+          DeviceNexus v1.0
+        </div>
 
       </div>
 
