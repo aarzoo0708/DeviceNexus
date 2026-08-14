@@ -4,6 +4,7 @@ import AppLayout from "./components/layout/AppLayout";
 
 import Dashboard from "./pages/Dashboard";
 import Customers from "./pages/Customers";
+import CustomerDetails from "./pages/CustomerDetails";
 import Devices from "./pages/Devices";
 import ServiceRequests from "./pages/ServiceRequests";
 import Repairs from "./pages/Repairs";
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "customers",
         Component: Customers,
+      },
+      {
+        path: "customers/:id",
+        Component: CustomerDetails,
       },
       {
         path: "devices",
