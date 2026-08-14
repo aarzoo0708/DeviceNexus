@@ -1,0 +1,30 @@
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 24px;
+}
+
+.page-header-content h1 {
+  margin: 0;
+
+  font-size: 28px;
+  font-weight: 700;
+
+  color: #0f172a;
+}
+
+.page-header-content p {
+  margin: 6px 0 0;
+
+  font-size: 14px;
+
+  color: #64748b;
+}
+
+.page-header-action {
+  flex-shrink: 0;
+}
