@@ -1,0 +1,67 @@
+import { createBrowserRouter } from "react-router";
+
+import AppLayout from "./components/layout/AppLayout";
+
+import Dashboard from "./pages/Dashboard";
+import Customers from "./pages/Customers";
+import Devices from "./pages/Devices";
+import ServiceRequests from "./pages/ServiceRequests";
+import Repairs from "./pages/Repairs";
+import Warranty from "./pages/Warranty";
+import FollowUps from "./pages/FollowUps";
+import Interactions from "./pages/Interactions";
+import Settings from "./pages/Settings";
+import NotFound from "./pages/NotFound";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    Component: AppLayout,
+
+    children: [
+      {
+        index: true,
+        Component: Dashboard,
+      },
+      {
+        path: "customers",
+        Component: Customers,
+      },
+      {
+        path: "devices",
+        Component: Devices,
+      },
+      {
+        path: "service-requests",
+        Component: ServiceRequests,
+      },
+      {
+        path: "repairs",
+        Component: Repairs,
+      },
+      {
+        path: "warranty",
+        Component: Warranty,
+      },
+      {
+        path: "follow-ups",
+        Component: FollowUps,
+      },
+      {
+        path: "interactions",
+        Component: Interactions,
+      },
+      {
+        path: "settings",
+        Component: Settings,
+      },
+    ],
+  },
+
+  {
+    path: "*",
+    Component: NotFound,
+  },
+]);
+
+export default router;
