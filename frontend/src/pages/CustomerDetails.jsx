@@ -6,6 +6,7 @@ import Card from "../components/common/Card/Card";
 import Badge from "../components/common/Badge/Badge";
 import DataTable from "../components/common/DataTable/DataTable";
 import { mockCustomers } from "../data/mockData";
+import "./Customers.css";
 
 function CustomerDetails() {
   const { id } = useParams();
@@ -25,8 +26,10 @@ function CustomerDetails() {
             </Button>
           }
         />
-        <Card style={{ padding: "20px", textAlign: "center", marginTop: "20px" }}>
-          <p>Invalid Customer ID: {id}</p>
+        <Card>
+          <div className="customer-error-card">
+            <p>Invalid Customer ID: {id}</p>
+          </div>
         </Card>
       </div>
     );
@@ -92,23 +95,23 @@ function CustomerDetails() {
 
       <div style={{ display: "grid", gap: "20px", marginTop: "20px" }}>
         <Card>
-          <div style={{ padding: "20px" }}>
+          <div className="customer-card-content">
             <h3 style={{ marginTop: 0, marginBottom: "15px" }}>Customer Profile</h3>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
+            <div className="customer-grid-2">
               <div>
-                <strong style={{ color: "#666", fontSize: "0.85em", display: "block" }}>Email</strong>
+                <strong className="customer-detail-label">Email</strong>
                 <span>{customer.email}</span>
               </div>
               <div>
-                <strong style={{ color: "#666", fontSize: "0.85em", display: "block" }}>Phone</strong>
+                <strong className="customer-detail-label">Phone</strong>
                 <span>{customer.phone}</span>
               </div>
               <div>
-                <strong style={{ color: "#666", fontSize: "0.85em", display: "block" }}>Joined Date</strong>
+                <strong className="customer-detail-label">Joined Date</strong>
                 <span>{customer.joinedDate}</span>
               </div>
               <div>
-                <strong style={{ color: "#666", fontSize: "0.85em", display: "block" }}>Total Devices</strong>
+                <strong className="customer-detail-label">Total Devices</strong>
                 <span>{customer.devices}</span>
               </div>
             </div>
@@ -116,7 +119,7 @@ function CustomerDetails() {
         </Card>
 
         <Card>
-          <div style={{ padding: "20px" }}>
+          <div className="customer-card-content">
             <h3 style={{ marginTop: 0, marginBottom: "15px" }}>Registered Devices</h3>
             {formattedDevices.length > 0 ? (
               <DataTable columns={deviceColumns} data={formattedDevices} />
@@ -127,7 +130,7 @@ function CustomerDetails() {
         </Card>
 
         <Card>
-          <div style={{ padding: "20px" }}>
+          <div className="customer-card-content">
             <h3 style={{ marginTop: 0, marginBottom: "15px" }}>Service History</h3>
             {formattedServices.length > 0 ? (
               <DataTable columns={serviceColumns} data={formattedServices} />

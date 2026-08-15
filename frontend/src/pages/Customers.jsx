@@ -58,7 +58,7 @@ function Customers() {
       ),
       joined: customer.joinedDate,
       actions: (
-        <span 
+        <span
           style={{ color: "#0066cc", cursor: "pointer", fontWeight: 500 }}
           onClick={() => navigate(`/customers/${customer.id}`)}
         >
@@ -74,7 +74,7 @@ function Customers() {
         title="Customers"
         description="Manage customer relationships and registered devices."
         action={
-          <Button>
+          <Button onClick={() => navigate("/customers/add")}>
             Add Customer
           </Button>
         }
