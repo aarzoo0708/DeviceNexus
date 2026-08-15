@@ -1,5 +1,6 @@
+import { useState, useEffect, useRef } from "react";
 import "./Navbar.css";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 const pageTitles = {
   "/": "Dashboard",
@@ -15,6 +16,25 @@ const pageTitles = {
 
 function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+    }
+    
+    if (isProfileOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isProfileOpen]);
 
   const currentPage =
     pageTitles[location.pathname] || "Dashboard";
@@ -80,28 +100,77 @@ function Navbar() {
         </button>
 
 
-        <div className="user-profile">
+        <div className="profile-menu-container" ref={dropdownRef}>
+          <button 
+            className="user-profile"
+            type="button"
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            aria-expanded={isProfileOpen}
+            aria-haspopup="true"
+          >
 
-          <div className="user-avatar">
-            A
-          </div>
+            <div className="user-avatar">
+              A
+            </div>
 
-          <div className="user-info">
+            <div className="user-info">
 
-            <span className="user-name">
-              Admin
+              <span className="user-name">
+                Admin
+              </span>
+
+              <span className="user-role">
+                Service Manager
+              </span>
+
+            </div>
+
+            <span className="user-arrow">
+              ▾
             </span>
 
-            <span className="user-role">
-              Service Manager
-            </span>
+          </button>
 
-          </div>
-
-          <span className="user-arrow">
-            ▾
-          </span>
-
+          {isProfileOpen && (
+            <div className="profile-dropdown">
+              <div className="dropdown-header">
+                <span className="dropdown-name">Admin</span>
+                <span className="dropdown-role">Service Manager</span>
+              </div>
+              <div className="dropdown-divider"></div>
+              <button 
+                className="dropdown-item" 
+                type="button"
+                onClick={() => {
+                  navigate("/profile");
+                  setIsProfileOpen(false);
+                }}
+              >
+                <span className="dropdown-icon">👤</span> My Profile
+              </button>
+              <button 
+                className="dropdown-item" 
+                type="button"
+                onClick={() => {
+                  navigate("/settings");
+                  setIsProfileOpen(false);
+                }}
+              >
+                <span className="dropdown-icon">⚙</span> Account Settings
+              </button>
+              <div className="dropdown-divider"></div>
+              <button 
+                className="dropdown-item text-danger" 
+                type="button"
+                onClick={() => {
+                  alert("Sign out will be available with authentication in a future submission.");
+                  setIsProfileOpen(false);
+                }}
+              >
+                <span className="dropdown-icon">🚪</span> Sign Out
+              </button>
+            </div>
+          )}
         </div>
 
       </div>
