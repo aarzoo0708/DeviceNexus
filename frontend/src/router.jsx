@@ -13,6 +13,7 @@ import Warranty from "./pages/Warranty";
 import FollowUps from "./pages/FollowUps";
 import Interactions from "./pages/Interactions";
 import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
       {
         path: "settings",
         Component: Settings,
+      },
+      {
+        path: "profile",
+        Component: Profile,
       },
     ],
   },
