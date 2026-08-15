@@ -7,6 +7,11 @@
 .main-area {
   min-height: 100vh;
   margin-left: 268px;
+  transition: margin-left 0.3s ease;
+}
+
+.app-layout.sidebar-collapsed .main-area {
+  margin-left: 80px;
 }
 
 /* Dashboard/page content */
@@ -21,6 +26,9 @@
   .main-area {
     margin-left: 230px;
   }
+  .app-layout.sidebar-collapsed .main-area {
+    margin-left: 80px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -30,7 +38,8 @@
 }
 
 @media (max-width: 700px) {
-  .main-area {
+  .main-area,
+  .app-layout.sidebar-collapsed .main-area {
     margin-left: 72px;
   }
 }
