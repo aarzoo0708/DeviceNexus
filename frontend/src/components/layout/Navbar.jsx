@@ -14,7 +14,7 @@ const pageTitles = {
   "/settings": "Settings",
 };
 
-function Navbar() {
+function Navbar({ onToggleSidebar }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -49,6 +49,8 @@ function Navbar() {
           className="menu-button"
           type="button"
           aria-label="Toggle sidebar"
+          aria-expanded={true}
+          onClick={onToggleSidebar}
         >
           ☰
         </button>

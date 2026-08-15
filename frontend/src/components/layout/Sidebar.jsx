@@ -68,9 +68,9 @@ const menuSections = [
   },
 ];
 
-function Sidebar() {
+function Sidebar({ isCollapsed }) {
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
 
       {/* BRAND */}
 
@@ -107,6 +107,7 @@ function Sidebar() {
                 key={item.label}
                 to={item.path}
                 end={item.path === "/"}
+                title={isCollapsed ? item.label : undefined}
                 className={({ isActive }) =>
                   `menu-item ${isActive ? "active" : ""}`
                 }
@@ -137,6 +138,7 @@ function Sidebar() {
 
         <NavLink
           to="/settings"
+          title={isCollapsed ? "Settings" : undefined}
           className={({ isActive }) =>
             `menu-item ${isActive ? "active" : ""}`
           }
