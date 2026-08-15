@@ -1,0 +1,31 @@
+/* src/pages/Customers.css */
+
+.customer-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+@media (max-width: 768px) {
+  .customer-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.customer-error-card {
+  padding: 20px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.customer-card-content {
+  padding: 20px;
+}
+
+.customer-detail-label {
+  color: #666;
+  font-size: 0.85em;
+  display: block;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
