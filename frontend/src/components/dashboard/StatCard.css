@@ -21,6 +21,26 @@
   box-shadow: var(--shadow-md);
 }
 
+.stat-card.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.stat-card.clickable:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+}
+
+.stat-card.clickable:active {
+  transform: translateY(0);
+}
+
+.stat-card.clickable:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+
 
 /* TOP */
 

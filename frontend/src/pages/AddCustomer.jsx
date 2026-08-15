@@ -3,8 +3,9 @@ import { useNavigate } from "react-router";
 import PageHeader from "../components/common/PageHeader/PageHeader";
 import Button from "../components/common/Button/Button";
 import Card from "../components/common/Card/Card";
-import { mockCustomers } from "../data/mockData";
+import { getCustomers, addCustomer } from "../data/mockData";
 import "./Customers.css";
+
 
 function AddCustomer() {
   const navigate = useNavigate();
@@ -54,9 +55,8 @@ function AddCustomer() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      // Step 9: Submit behavior 
-      // Step 11: Add newly created customer to frontend list
-      const newId = `CUST-${String(mockCustomers.length + 1).padStart(3, '0')}`;
+      const currentCustomers = getCustomers();
+      const newId = `CUST-${String(currentCustomers.length + 1).padStart(3, '0')}`;
       const newCustomer = {
         id: newId,
         name: formData.name,
@@ -65,16 +65,15 @@ function AddCustomer() {
         devices: 0,
         status: formData.status,
         joinedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-        registeredDevices: [], // Step 14: empty states
-        serviceHistory: [] // Step 14: empty states
+        registeredDevices: [],
+        serviceHistory: []
       };
-      
-      mockCustomers.push(newCustomer);
-      
-      // Step 13: Navigate back on success
+
+      addCustomer(newCustomer);
       navigate("/customers");
     }
   };
+
 
   return (
     <div className="page-container">

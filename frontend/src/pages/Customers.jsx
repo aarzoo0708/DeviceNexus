@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import PageHeader from "../components/common/PageHeader/PageHeader";
 import Button from "../components/common/Button/Button";
 import SearchInput from "../components/common/SearchInput/SearchInput";
 import DataTable from "../components/common/DataTable/DataTable";
 import Badge from "../components/common/Badge/Badge";
-import { mockCustomers } from "../data/mockData";
+import { getCustomers, onDataChange } from "../data/mockData";
 
 function Customers() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [customers, setCustomers] = useState(() => getCustomers());
 
-  const filteredCustomers = mockCustomers.filter((customer) => {
+  useEffect(() => {
+    const updateCustomers = () => setCustomers(getCustomers());
+    const unsubscribe = onDataChange(updateCustomers);
+    return unsubscribe;
+  }, []);
+
+  const filteredCustomers = customers.filter((customer) => {
     const query = searchQuery.toLowerCase();
     return (
       customer.name.toLowerCase().includes(query) ||
@@ -20,6 +27,7 @@ function Customers() {
       customer.id.toLowerCase().includes(query)
     );
   });
+
 
   const columns = [
     { key: "customer", label: "Customer" },
