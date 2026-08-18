@@ -79,10 +79,7 @@
   color: var(--warning);
 }
 
-.activity-dot.repair {
-  background: var(--success-light);
-  color: var(--success);
-}
+
 
 .activity-dot.warranty {
   background: var(--danger-light);

@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import "./QuickActions.css";
 
 const actions = [
@@ -5,29 +6,29 @@ const actions = [
     label: "Add Customer",
     description: "Create a new customer profile",
     icon: "+",
-    type: "customer"
+    type: "customer",
+    path: "/customers/add"
   },
   {
     label: "Register Device",
     description: "Add a device to a customer",
     icon: "▣",
-    type: "device"
+    type: "device",
+    path: "/devices",
+    state: { openAddModal: true }
   },
   {
     label: "Create Service Request",
     description: "Open a new service request",
     icon: "⚡",
-    type: "request"
-  },
-  {
-    label: "Schedule Follow-up",
-    description: "Create a customer follow-up",
-    icon: "✓",
-    type: "followup"
+    type: "request",
+    path: "/service-requests",
+    state: { openCreateModal: true }
   }
 ];
 
 function QuickActions() {
+  const navigate = useNavigate();
   return (
     <section className="quick-actions-card">
 
@@ -50,6 +51,7 @@ function QuickActions() {
           <button
             className="action-item"
             key={action.label}
+            onClick={() => navigate(action.path, { state: action.state })}
           >
 
             <div className={`action-icon ${action.type}`}>

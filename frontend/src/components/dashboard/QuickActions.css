@@ -85,10 +85,7 @@
   color: var(--warning);
 }
 
-.action-icon.followup {
-  background: var(--success-light);
-  color: var(--success);
-}
+
 
 .action-content {
   flex: 1;

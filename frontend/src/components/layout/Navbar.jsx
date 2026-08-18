@@ -7,9 +7,7 @@ const pageTitles = {
   "/customers": "Customers",
   "/devices": "Devices",
   "/service-requests": "Service Requests",
-  "/repairs": "Repairs",
   "/warranty": "Warranty",
-  "/follow-ups": "Follow-ups",
   "/interactions": "Interactions",
   "/settings": "Settings",
 };
@@ -39,14 +37,7 @@ const INITIAL_NOTIFICATIONS = [
     unread: true,
     type: "warranty",
   },
-  {
-    id: "notif-4",
-    title: "Device Sent for Repair",
-    message: "Samsung Galaxy S23 was routed to hardware diagnostics.",
-    time: "3h ago",
-    unread: false,
-    type: "repair",
-  },
+
   {
     id: "notif-5",
     title: "Service Request Update",
@@ -143,17 +134,7 @@ function Navbar({ onToggleSidebar }) {
         </div>
       </div>
 
-      {/* CENTER */}
-      <div className="navbar-search">
-        <span className="search-icon">⌕</span>
 
-        <input
-          type="text"
-          placeholder="Search customers, devices, requests..."
-        />
-
-        <span className="search-shortcut">Ctrl K</span>
-      </div>
 
       {/* RIGHT */}
       <div className="navbar-right">
@@ -217,7 +198,6 @@ function Navbar({ onToggleSidebar }) {
                         {item.type === "customer" && "👥"}
                         {item.type === "device" && "💻"}
                         {item.type === "warranty" && "⚠️"}
-                        {item.type === "repair" && "🔧"}
                         {item.type === "request" && "⚡"}
                       </div>
 

@@ -8,9 +8,8 @@ import AddCustomer from "./pages/AddCustomer";
 import CustomerDetails from "./pages/CustomerDetails";
 import Devices from "./pages/Devices";
 import ServiceRequests from "./pages/ServiceRequests";
-import Repairs from "./pages/Repairs";
+
 import Warranty from "./pages/Warranty";
-import FollowUps from "./pages/FollowUps";
 import Interactions from "./pages/Interactions";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
@@ -46,18 +45,12 @@ const router = createBrowserRouter([
         path: "service-requests",
         Component: ServiceRequests,
       },
-      {
-        path: "repairs",
-        Component: Repairs,
-      },
+
       {
         path: "warranty",
         Component: Warranty,
       },
-      {
-        path: "follow-ups",
-        Component: FollowUps,
-      },
+
       {
         path: "interactions",
         Component: Interactions,
