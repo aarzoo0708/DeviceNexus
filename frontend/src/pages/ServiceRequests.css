@@ -1,0 +1,97 @@
+.service-requests-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.service-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.service-search-box {
+  max-width: 420px;
+  width: 100%;
+}
+
+.table-req-id {
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 13px;
+}
+
+.table-customer-name,
+.table-device-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.table-subtext {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.table-issue-text {
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.table-assigned-name {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.table-action-btn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+}
+
+.table-action-btn:hover {
+  background: var(--primary-light);
+  text-decoration: underline;
+}
+
+.service-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  gap: 12px;
+}
+
+.empty-icon {
+  font-size: 36px;
+  margin-bottom: 4px;
+}
+
+.service-empty-state h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.service-empty-state p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 360px;
+}

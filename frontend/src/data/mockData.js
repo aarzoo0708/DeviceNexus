@@ -165,6 +165,115 @@ export const INITIAL_DEVICES = [
   },
 ];
 
+export const INITIAL_SERVICE_REQUESTS = [
+  {
+    id: "REQ-1024",
+    customerId: "CUST-001",
+    customerName: "Rahul Sharma",
+    customerEmail: "rahul@example.com",
+    customerPhone: "9876543210",
+    deviceId: "DEV-101",
+    deviceName: "Dell XPS 15",
+    deviceType: "Laptop",
+    issue: "Keyboard not working - keys stuck after liquid spill",
+    priority: "High",
+    status: "In Progress",
+    assignedTo: "Sameer Verma (Sr. Technician)",
+    createdDate: "16 Aug 2026",
+    estimatedCompletion: "19 Aug 2026",
+    notes: "Replacement keyboard ordered from Dell authorized parts.",
+    timeline: [
+      { step: "Created", date: "16 Aug 2026, 10:30 AM", note: "Customer lodged complaint via call" },
+      { step: "Assigned", date: "16 Aug 2026, 11:45 AM", note: "Assigned to Sameer Verma" },
+      { step: "In Progress", date: "17 Aug 2026, 02:15 PM", note: "Diagnostic completed. Part ordered." }
+    ]
+  },
+  {
+    id: "REQ-1023",
+    customerId: "CUST-002",
+    customerName: "Priya Kapoor",
+    customerEmail: "priya@example.com",
+    customerPhone: "9812345678",
+    deviceId: "DEV-104",
+    deviceName: "MacBook Pro M2",
+    deviceType: "Laptop",
+    issue: "Battery draining rapidly within 2 hours",
+    priority: "Medium",
+    status: "New",
+    assignedTo: "Unassigned",
+    createdDate: "17 Aug 2026",
+    estimatedCompletion: "21 Aug 2026",
+    notes: "Diagnostic battery health cycle check required.",
+    timeline: [
+      { step: "Created", date: "17 Aug 2026, 04:20 PM", note: "Walk-in service desk request" }
+    ]
+  },
+  {
+    id: "REQ-1022",
+    customerId: "CUST-003",
+    customerName: "Amit Patel",
+    customerEmail: "amit@example.com",
+    customerPhone: "9823456789",
+    deviceId: "DEV-106",
+    deviceName: "Samsung Galaxy S23",
+    deviceType: "Smartphone",
+    issue: "Screen flickering on low brightness",
+    priority: "Critical",
+    status: "Assigned",
+    assignedTo: "Aman Gupta (Display Specialist)",
+    createdDate: "15 Aug 2026",
+    estimatedCompletion: "18 Aug 2026",
+    notes: "OLED display controller needs recalibration or panel replacement.",
+    timeline: [
+      { step: "Created", date: "15 Aug 2026, 09:15 AM", note: "Online portal submission" },
+      { step: "Assigned", date: "15 Aug 2026, 01:00 PM", note: "Assigned to Aman Gupta" }
+    ]
+  },
+  {
+    id: "REQ-1021",
+    customerId: "CUST-004",
+    customerName: "Sneha Desai",
+    customerEmail: "sneha@example.com",
+    customerPhone: "9834567890",
+    deviceId: "DEV-107",
+    deviceName: "Lenovo ThinkPad",
+    deviceType: "Laptop",
+    issue: "Frequent OS crash with Blue Screen of Death (BSOD)",
+    priority: "High",
+    status: "Resolved",
+    assignedTo: "Sameer Verma (Sr. Technician)",
+    createdDate: "12 Aug 2026",
+    estimatedCompletion: "14 Aug 2026",
+    notes: "Faulty RAM module swapped under warranty. Stress tested for 24 hours.",
+    timeline: [
+      { step: "Created", date: "12 Aug 2026, 11:00 AM", note: "Customer reported repeated crashes" },
+      { step: "In Progress", date: "13 Aug 2026, 10:00 AM", note: "Memory test diagnosed corrupt sector" },
+      { step: "Resolved", date: "14 Aug 2026, 05:30 PM", note: "RAM replaced, verified passing memory benchmark" }
+    ]
+  },
+  {
+    id: "REQ-1020",
+    customerId: "CUST-001",
+    customerName: "Rahul Sharma",
+    customerEmail: "rahul@example.com",
+    customerPhone: "9876543210",
+    deviceId: "DEV-102",
+    deviceName: "iPhone 15",
+    deviceType: "Smartphone",
+    issue: "Charging port loose, disconnects frequently",
+    priority: "Low",
+    status: "On Hold",
+    assignedTo: "Aman Gupta (Display Specialist)",
+    createdDate: "10 Aug 2026",
+    estimatedCompletion: "22 Aug 2026",
+    notes: "Awaiting customer approval for OEM port replacement quote.",
+    timeline: [
+      { step: "Created", date: "10 Aug 2026, 03:45 PM", note: "In-store inquiry" },
+      { step: "On Hold", date: "11 Aug 2026, 11:00 AM", note: "Cost estimate sent to customer" }
+    ]
+  }
+];
+
 // Helper functions for data access & persistence
 const DATA_CHANGE_EVENT = "devicenexus-data-change";
 
@@ -243,7 +352,48 @@ export function addDevice(device) {
   return updated;
 }
 
+// Service Requests Access & Helpers
+export function getServiceRequests() {
+  try {
+    const saved = localStorage.getItem("devicenexus-service-requests");
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {
+    console.error("Failed to parse service requests from localStorage", e);
+  }
+  return INITIAL_SERVICE_REQUESTS;
+}
+
+export function saveServiceRequests(requests) {
+  try {
+    localStorage.setItem("devicenexus-service-requests", JSON.stringify(requests));
+    mockServiceRequests.length = 0;
+    mockServiceRequests.push(...requests);
+    notifyDataChange();
+  } catch (e) {
+    console.error("Failed to save service requests to localStorage", e);
+  }
+}
+
+export function addServiceRequest(request) {
+  const current = getServiceRequests();
+  const updated = [request, ...current];
+  saveServiceRequests(updated);
+  return updated;
+}
+
+export function updateServiceRequestStatus(id, newStatus) {
+  const current = getServiceRequests();
+  const updated = current.map((req) =>
+    req.id === id ? { ...req, status: newStatus } : req
+  );
+  saveServiceRequests(updated);
+  return updated;
+}
+
 // In-memory exports initialized from storage or defaults
 export const mockCustomers = [...getCustomers()];
 export const mockDevices = [...getDevices()];
+export const mockServiceRequests = [...getServiceRequests()];
 
