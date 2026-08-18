@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router";
 import PageHeader from "../components/common/PageHeader/PageHeader";
 import Button from "../components/common/Button/Button";
 import Card from "../components/common/Card/Card";
@@ -14,6 +15,16 @@ function Devices() {
   const [typeFilter, setTypeFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [warrantyFilter, setWarrantyFilter] = useState("All");
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.openAddModal) {
+      setIsAddModalOpen(true);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
 
   useEffect(() => {
     const updateDevices = () => setDevices(getDevices());
@@ -44,8 +55,7 @@ function Devices() {
     switch (status) {
       case "Active":
         return "success";
-      case "In Repair":
-        return "warning";
+
       case "Inactive":
         return "default";
       case "Retired":
@@ -182,7 +192,7 @@ function Devices() {
       {/* Page Header */}
       <PageHeader
         title="Devices"
-        description="Manage and track customer hardware devices, warranty information, and repair status."
+        description="Manage and track customer hardware devices and warranty information."
         action={
           <Button onClick={() => setIsAddModalOpen(true)}>
             + Add Device
@@ -228,7 +238,7 @@ function Devices() {
               >
                 <option value="All">All Statuses</option>
                 <option value="Active">Active</option>
-                <option value="In Repair">In Repair</option>
+
                 <option value="Inactive">Inactive</option>
                 <option value="Retired">Retired</option>
               </select>
@@ -446,7 +456,7 @@ function Devices() {
                       }
                     >
                       <option value="Active">Active</option>
-                      <option value="In Repair">In Repair</option>
+
                       <option value="Inactive">Inactive</option>
                       <option value="Retired">Retired</option>
                     </select>
@@ -593,7 +603,7 @@ function Devices() {
                       }
                     >
                       <option value="Active">Active</option>
-                      <option value="In Repair">In Repair</option>
+
                       <option value="Inactive">Inactive</option>
                       <option value="Retired">Retired</option>
                     </select>

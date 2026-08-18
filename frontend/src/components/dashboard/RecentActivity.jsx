@@ -15,13 +15,7 @@ const activities = [
     description: "Request #1024 was created for ASUS Vivobook",
     time: "35 minutes ago"
   },
-  {
-    id: 3,
-    type: "repair",
-    title: "Repair completed",
-    description: "Battery replacement completed for iPhone 15",
-    time: "1 hour ago"
-  },
+
   {
     id: 4,
     type: "warranty",

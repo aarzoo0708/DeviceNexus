@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router";
 import PageHeader from "../components/common/PageHeader/PageHeader";
 import Button from "../components/common/Button/Button";
 import SearchInput from "../components/common/SearchInput/SearchInput";
@@ -21,6 +22,16 @@ function ServiceRequests() {
   const [activeStatus, setActiveStatus] = useState("All");
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.openCreateModal) {
+      setIsCreateModalOpen(true);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
 
   useEffect(() => {
     const refreshData = () => setRequests(getServiceRequests());
@@ -174,7 +185,7 @@ function ServiceRequests() {
     <div className="page-container service-requests-page">
       <PageHeader
         title="Service Requests"
-        description="Track, assign, and resolve customer device issues and repair requests."
+        description="Track, assign, and resolve customer device issues and service requests."
         action={
           <Button onClick={() => setIsCreateModalOpen(true)}>
             + New Request

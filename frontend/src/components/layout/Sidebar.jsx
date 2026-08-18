@@ -38,11 +38,7 @@ const menuSections = [
         icon: "⚡",
         path: "/service-requests",
       },
-      {
-        label: "Repairs",
-        icon: "🔧",
-        path: "/repairs",
-      },
+
       {
         label: "Warranty",
         icon: "◷",
@@ -54,11 +50,7 @@ const menuSections = [
   {
     title: "RELATIONSHIP",
     items: [
-      {
-        label: "Follow-ups",
-        icon: "✓",
-        path: "/follow-ups",
-      },
+
       {
         label: "Interactions",
         icon: "💬",

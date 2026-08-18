@@ -66,13 +66,7 @@ function Dashboard() {
           trend="negative"
         />
 
-        <StatCard
-          title="Pending Follow-ups"
-          value="09"
-          change="↑ 2.3% vs last month"
-          icon="✓"
-          trend="negative"
-        />
+
       </div>
 
       <div className="dashboard-main-grid">

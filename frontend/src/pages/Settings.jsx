@@ -11,7 +11,6 @@ function Settings() {
   const [alerts, setAlerts] = useState({
     serviceRequests: true,
     warranty: true,
-    followUp: true,
     system: true
   });
 
@@ -96,17 +95,7 @@ function Settings() {
               <span className="slider"></span>
             </label>
           </div>
-          <div className="settings-toggle-row">
-            <span>Follow-up Reminders</span>
-            <label className="toggle-switch">
-              <input 
-                type="checkbox" 
-                checked={alerts.followUp} 
-                onChange={e => setAlerts({...alerts, followUp: e.target.checked})} 
-              />
-              <span className="slider"></span>
-            </label>
-          </div>
+
           <div className="settings-toggle-row">
             <span>System Notifications</span>
             <label className="toggle-switch">
