@@ -1,0 +1,128 @@
+.warranty-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.warranty-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .warranty-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .warranty-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.warranty-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+
+.warranty-stat-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.stat-subtext {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.text-success {
+  color: var(--success) !important;
+}
+
+.text-warning {
+  color: var(--warning) !important;
+}
+
+.text-danger {
+  color: var(--danger) !important;
+}
+
+.warranty-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.warranty-search-box {
+  max-width: 420px;
+  width: 100%;
+}
+
+.table-warranty-id {
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 13px;
+}
+
+.table-plan-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.table-expiry-date {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.warranty-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  gap: 12px;
+}
+
+.warranty-empty-state h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.warranty-empty-state p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 360px;
+}

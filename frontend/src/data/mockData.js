@@ -274,6 +274,159 @@ export const INITIAL_SERVICE_REQUESTS = [
   }
 ];
 
+export const INITIAL_WARRANTIES = [
+  {
+    id: "WAR-501",
+    deviceId: "DEV-1001",
+    deviceName: 'MacBook Pro 16"',
+    deviceType: "Laptop",
+    serialNumber: "C02FX390MD6R",
+    customerId: "CUST-001",
+    customerName: "Rahul Sharma",
+    customerPhone: "9876543210",
+    warrantyType: "AppleCare+ Enterprise",
+    provider: "Apple Official Care",
+    purchaseDate: "15 Jan 2024",
+    startDate: "15 Jan 2024",
+    expiryDate: "15 Jan 2027",
+    daysRemaining: 148,
+    status: "Active",
+    coverage: "Hardware defects, accidental damage protection, 24/7 priority support & battery health replacement below 80%.",
+    deductible: "₹0 for mechanical, ₹2,500 for accidental damage",
+    claimsCount: 1,
+    claims: [
+      {
+        claimId: "CLM-801",
+        date: "16 Aug 2026",
+        issue: "Keyboard replacement (REQ-1024)",
+        amountCovered: "₹8,500 (100%)",
+        status: "Approved",
+      },
+    ],
+  },
+  {
+    id: "WAR-502",
+    deviceId: "DEV-1002",
+    deviceName: "iPhone 15 Pro",
+    deviceType: "Smartphone",
+    serialNumber: "F17GL901PQ2A",
+    customerId: "CUST-002",
+    customerName: "Priya Kapoor",
+    customerPhone: "9812345678",
+    warrantyType: "OEM Limited 1-Year",
+    provider: "Apple Retail Warranty",
+    purchaseDate: "22 Sep 2023",
+    startDate: "22 Sep 2023",
+    expiryDate: "22 Sep 2026",
+    daysRemaining: 23,
+    status: "Expiring Soon",
+    coverage: "Manufacturing and component defects. Liquid and accidental drop damage not covered.",
+    deductible: "Standard OEM terms apply",
+    claimsCount: 0,
+    claims: [],
+  },
+  {
+    id: "WAR-503",
+    deviceId: "DEV-1003",
+    deviceName: "Dell XPS 15",
+    deviceType: "Laptop",
+    serialNumber: "DL-8840192-X",
+    customerId: "CUST-003",
+    customerName: "Amit Patel",
+    customerPhone: "9823456789",
+    warrantyType: "Dell ProSupport Plus",
+    provider: "Dell Direct Services",
+    purchaseDate: "10 Apr 2022",
+    startDate: "10 Apr 2022",
+    expiryDate: "10 Apr 2024",
+    daysRemaining: 0,
+    status: "Expired",
+    coverage: "Next business day on-site service, accidental damage protection, keep-your-hard-drive service.",
+    deductible: "Expired - Out of warranty pricing applies",
+    claimsCount: 2,
+    claims: [
+      {
+        claimId: "CLM-704",
+        date: "12 Oct 2023",
+        issue: "Motherboard audio codec replacement",
+        amountCovered: "₹12,000 (100%)",
+        status: "Completed",
+      },
+    ],
+  },
+  {
+    id: "WAR-504",
+    deviceId: "DEV-1006",
+    deviceName: "ThinkPad X1 Carbon",
+    deviceType: "Laptop",
+    serialNumber: "PF-4A9011X",
+    customerId: "CUST-004",
+    customerName: "Sneha Desai",
+    customerPhone: "9834567890",
+    warrantyType: "Premier On-Site Support",
+    provider: "Lenovo Premier Care",
+    purchaseDate: "01 Mar 2024",
+    startDate: "01 Mar 2024",
+    expiryDate: "01 Mar 2027",
+    daysRemaining: 193,
+    status: "Active",
+    coverage: "Dedicated technical account manager, unscripted troubleshooting, comprehensive parts and labor coverage.",
+    deductible: "₹0 standard",
+    claimsCount: 1,
+    claims: [
+      {
+        claimId: "CLM-812",
+        date: "14 Aug 2026",
+        issue: "RAM module replacement (REQ-1021)",
+        amountCovered: "₹4,200 (100%)",
+        status: "Approved",
+      },
+    ],
+  },
+  {
+    id: "WAR-505",
+    deviceId: "DEV-1007",
+    deviceName: "Apple Watch Ultra 2",
+    deviceType: "Smartwatch",
+    serialNumber: "G6VZQ119P0",
+    customerId: "CUST-002",
+    customerName: "Priya Kapoor",
+    customerPhone: "9812345678",
+    warrantyType: "AppleCare+ for Watch",
+    provider: "Apple Official Care",
+    purchaseDate: "14 Oct 2023",
+    startDate: "14 Oct 2023",
+    expiryDate: "14 Oct 2026",
+    daysRemaining: 55,
+    status: "Active",
+    coverage: "Unlimited incidents of accidental damage, battery service if under 80%, express replacement service.",
+    deductible: "₹1,500 per damage claim",
+    claimsCount: 0,
+    claims: [],
+  },
+  {
+    id: "WAR-506",
+    deviceId: "DEV-1005",
+    deviceName: "HP LaserJet Enterprise",
+    deviceType: "Printer",
+    serialNumber: "CNB8G31023",
+    customerId: "CUST-005",
+    customerName: "Vikram Singh",
+    customerPhone: "9845678901",
+    warrantyType: "HP CarePack 3-Year",
+    provider: "HP Commercial Warranty",
+    purchaseDate: "18 Jun 2020",
+    startDate: "18 Jun 2020",
+    expiryDate: "18 Jun 2023",
+    daysRemaining: 0,
+    status: "Expired",
+    coverage: "Onsite pickup and delivery, maintenance kit replacement.",
+    deductible: "Expired",
+    claimsCount: 0,
+    claims: [],
+  },
+];
+
 // Helper functions for data access & persistence
 const DATA_CHANGE_EVENT = "devicenexus-data-change";
 
@@ -392,8 +545,65 @@ export function updateServiceRequestStatus(id, newStatus) {
   return updated;
 }
 
+// Warranty Access & Helpers
+export function getWarranties() {
+  try {
+    const saved = localStorage.getItem("devicenexus-warranties");
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {
+    console.error("Failed to parse warranties from localStorage", e);
+  }
+  return INITIAL_WARRANTIES;
+}
+
+export function saveWarranties(warranties) {
+  try {
+    localStorage.setItem("devicenexus-warranties", JSON.stringify(warranties));
+    mockWarranties.length = 0;
+    mockWarranties.push(...warranties);
+    notifyDataChange();
+  } catch (e) {
+    console.error("Failed to save warranties to localStorage", e);
+  }
+}
+
+export function addWarranty(warranty) {
+  const current = getWarranties();
+  const updated = [warranty, ...current];
+  saveWarranties(updated);
+  return updated;
+}
+
+export function extendWarranty(id, additionalYears = 1) {
+  const current = getWarranties();
+  const updated = current.map((w) => {
+    if (w.id === id) {
+      const currentExpiry = new Date(w.expiryDate);
+      currentExpiry.setFullYear(currentExpiry.getFullYear() + additionalYears);
+      const newExpiryStr = currentExpiry.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+      return {
+        ...w,
+        expiryDate: newExpiryStr,
+        status: "Active",
+        daysRemaining: (w.daysRemaining || 0) + additionalYears * 365,
+      };
+    }
+    return w;
+  });
+  saveWarranties(updated);
+  return updated;
+}
+
 // In-memory exports initialized from storage or defaults
 export const mockCustomers = [...getCustomers()];
 export const mockDevices = [...getDevices()];
 export const mockServiceRequests = [...getServiceRequests()];
+export const mockWarranties = [...getWarranties()];
+
 
