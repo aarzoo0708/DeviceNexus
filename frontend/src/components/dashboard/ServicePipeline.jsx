@@ -1,121 +1,110 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+import { getServiceRequests, onDataChange } from "../../data/mockData";
 import "./ServicePipeline.css";
 
-const statusCounts = [
-  { label: "New", value: 12 },
-  { label: "Assigned", value: 8 },
-  { label: "In Progress", value: 6 },
-  { label: "Resolved", value: 15 }
-];
-
-const requests = [
-  {
-    id: "#1024",
-    issue: "Keyboard not working",
-    device: "ASUS Vivobook",
-    priority: "High",
-    status: "In Progress"
-  },
-  {
-    id: "#1023",
-    issue: "Screen issue",
-    device: "Dell Inspiron",
-    priority: "Medium",
-    status: "Assigned"
-  },
-  {
-    id: "#1022",
-    issue: "Battery replacement",
-    device: "iPhone 15",
-    priority: "High",
-    status: "New"
-  },
-  {
-    id: "#1021",
-    issue: "Software issue",
-    device: "HP Pavilion",
-    priority: "Low",
-    status: "Resolved"
-  }
-];
-
 function ServicePipeline() {
+  const navigate = useNavigate();
+  const [requests, setRequests] = useState(() => getServiceRequests());
+
+  useEffect(() => {
+    const updateRequests = () => setRequests(getServiceRequests());
+    const unsubscribe = onDataChange(updateRequests);
+    return unsubscribe;
+  }, []);
+
+  // Compute dynamic counts from real data
+  const statusCounts = [
+    {
+      label: "New",
+      value: requests.filter((r) => r.status === "New").length,
+    },
+    {
+      label: "Assigned",
+      value: requests.filter((r) => r.status === "Assigned").length,
+    },
+    {
+      label: "In Progress",
+      value: requests.filter((r) => r.status === "In Progress").length,
+    },
+    {
+      label: "Resolved",
+      value: requests.filter((r) => r.status === "Resolved").length,
+    },
+  ];
+
+  // Take the most recent 4 requests
+  const recentRequests = requests.slice(0, 4);
+
   return (
     <section className="pipeline-card">
-
       {/* Header */}
       <div className="pipeline-header">
-
         <div>
-          <p className="section-label">
-            SERVICE OPERATIONS
-          </p>
-
+          <p className="section-label">SERVICE OPERATIONS</p>
           <h2>Service Requests</h2>
         </div>
 
-        <button className="view-all-button">
+        <button
+          type="button"
+          className="view-all-button"
+          onClick={() => navigate("/service-requests")}
+        >
           View all →
         </button>
-
       </div>
 
-      {/* Status Summary */}
+      {/* Status Summary Chips */}
       <div className="status-grid">
-
         {statusCounts.map((status) => (
           <div
             className="status-item"
             key={status.label}
+            onClick={() => navigate("/service-requests")}
+            style={{ cursor: "pointer" }}
+            title={`View ${status.label} requests`}
           >
             <span>{status.label}</span>
             <strong>{status.value}</strong>
           </div>
         ))}
-
       </div>
 
       {/* Request List */}
       <div className="request-list">
+        {recentRequests.length > 0 ? (
+          recentRequests.map((request) => (
+            <div
+              className="request-row"
+              key={request.id}
+              onClick={() => navigate("/service-requests")}
+              style={{ cursor: "pointer" }}
+              title="Click to view in Service Requests"
+            >
+              <div className="request-id">{request.id}</div>
 
-        {requests.map((request) => (
+              <div className="request-info">
+                <strong>{request.issue}</strong>
+                <span>
+                  {request.deviceName} · {request.customerName}
+                </span>
+              </div>
 
-          <div
-            className="request-row"
-            key={request.id}
-          >
-
-            <div className="request-id">
-              {request.id}
-            </div>
-
-            <div className="request-info">
-
-              <strong>
-                {request.issue}
-              </strong>
-
-              <span>
-                {request.device}
+              <span
+                className={`priority-badge ${request.priority?.toLowerCase() || "medium"}`}
+              >
+                {request.priority || "Medium"}
               </span>
 
+              <span className="request-status">{request.status}</span>
             </div>
-
-            <span
-              className={`priority-badge ${request.priority.toLowerCase()}`}
-            >
-              {request.priority}
-            </span>
-
-            <span className="request-status">
-              {request.status}
-            </span>
-
+          ))
+        ) : (
+          <div style={{ padding: "16px", textAlign: "center", color: "var(--text-muted)", fontSize: "13px" }}>
+            No service requests found.
           </div>
-
-        ))}
-
+        )}
       </div>
-
     </section>
   );
 }
