@@ -1,97 +1,79 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+import { getWarranties, onDataChange } from "../../data/mockData";
 import "./WarrantyAlert.css";
 
-const warrantyDevices = [
-  {
-    name: "ASUS Vivobook",
-    serial: "DV-AS-2048",
-    daysLeft: 12,
-    type: "Laptop"
-  },
-  {
-    name: "iPhone 15",
-    serial: "DV-IP-3812",
-    daysLeft: 21,
-    type: "Smartphone"
-  },
-  {
-    name: "Dell Inspiron",
-    serial: "DV-DE-1194",
-    daysLeft: 34,
-    type: "Laptop"
-  }
-];
-
 function WarrantyAlert() {
+  const navigate = useNavigate();
+  const [warranties, setWarranties] = useState(() => getWarranties());
+
+  useEffect(() => {
+    const updateWarranties = () => setWarranties(getWarranties());
+    const unsubscribe = onDataChange(updateWarranties);
+    return unsubscribe;
+  }, []);
+
+  // Filter alerts: expiring soon or top active devices
+  const alertWarranties = warranties
+    .filter((w) => w.status === "Expiring Soon" || w.status === "Active")
+    .slice(0, 3);
+
+  const activeCount = warranties.filter((w) => w.status === "Active").length;
+
   return (
     <section className="warranty-card">
-
       <div className="warranty-header">
-
         <div>
-          <p className="section-label">
-            DEVICE HEALTH
-          </p>
-
+          <p className="section-label">DEVICE HEALTH</p>
           <h2>Warranty Alerts</h2>
         </div>
 
-        <button className="view-all-button">
+        <button
+          type="button"
+          className="view-all-button"
+          onClick={() => navigate("/warranty")}
+        >
           View all →
         </button>
-
       </div>
 
       <div className="warranty-list">
+        {alertWarranties.length > 0 ? (
+          alertWarranties.map((w) => (
+            <div
+              className="warranty-item"
+              key={w.id}
+              onClick={() => navigate("/warranty")}
+              style={{ cursor: "pointer" }}
+              title="Click to view warranty policy"
+            >
+              <div className="warranty-icon">
+                {w.status === "Expiring Soon" ? "⚠️" : "🛡️"}
+              </div>
 
-        {warrantyDevices.map((device) => (
+              <div className="warranty-info">
+                <strong>{w.deviceName}</strong>
+                <span>
+                  {w.deviceType} · {w.serialNumber}
+                </span>
+              </div>
 
-          <div
-            className="warranty-item"
-            key={device.serial}
-          >
-
-            <div className="warranty-icon">
-              ⚠
+              <div className="warranty-days">
+                <strong>{w.daysRemaining}</strong>
+                <span>days</span>
+              </div>
             </div>
-
-            <div className="warranty-info">
-
-              <strong>
-                {device.name}
-              </strong>
-
-              <span>
-                {device.type} · {device.serial}
-              </span>
-
-            </div>
-
-            <div className="warranty-days">
-
-              <strong>
-                {device.daysLeft}
-              </strong>
-
-              <span>
-                days
-              </span>
-
-            </div>
-
+          ))
+        ) : (
+          <div style={{ padding: "16px", textAlign: "center", color: "var(--text-muted)", fontSize: "13px" }}>
+            No active warranty alerts.
           </div>
-
-        ))}
-
+        )}
       </div>
 
       <div className="warranty-footer">
-
-        <span>
-          ✓ 12 warranties currently active
-        </span>
-
+        <span>✓ {activeCount} warranties currently active</span>
       </div>
-
     </section>
   );
 }
