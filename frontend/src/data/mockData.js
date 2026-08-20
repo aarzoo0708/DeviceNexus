@@ -427,7 +427,7 @@ export const INITIAL_WARRANTIES = [
   },
 ];
 
-// Helper functions for data access & persistence
+// Helper functions for in-memory data access & component notification
 const DATA_CHANGE_EVENT = "devicenexus-data-change";
 
 export function notifyDataChange() {
@@ -444,166 +444,130 @@ export function onDataChange(callback) {
   return () => {};
 }
 
+// In-memory datasets initialized from default constants
+export const mockCustomers = [...INITIAL_CUSTOMERS];
+export const mockDevices = [...INITIAL_DEVICES];
+export const mockServiceRequests = [...INITIAL_SERVICE_REQUESTS];
+export const mockWarranties = [...INITIAL_WARRANTIES];
+export const mockInteractions = [...INITIAL_INTERACTIONS];
+
+// Customers Access & Helpers
 export function getCustomers() {
-  try {
-    const saved = localStorage.getItem("devicenexus-customers");
-    if (saved) {
-      return JSON.parse(saved);
-    }
-  } catch (e) {
-    console.error("Failed to parse customers from localStorage", e);
-  }
-  return INITIAL_CUSTOMERS;
+  return [...mockCustomers];
 }
 
 export function saveCustomers(customers) {
-  try {
-    localStorage.setItem("devicenexus-customers", JSON.stringify(customers));
-    // Keep exported array reference synced
-    mockCustomers.length = 0;
-    mockCustomers.push(...customers);
-    notifyDataChange();
-  } catch (e) {
-    console.error("Failed to save customers to localStorage", e);
-  }
+  mockCustomers.length = 0;
+  mockCustomers.push(...customers);
+  notifyDataChange();
 }
 
 export function addCustomer(customer) {
-  const current = getCustomers();
-  const updated = [...current, customer];
-  saveCustomers(updated);
-  return updated;
+  mockCustomers.push(customer);
+  notifyDataChange();
+  return [...mockCustomers];
 }
 
+// Devices Access & Helpers
 export function getDevices() {
-  try {
-    const saved = localStorage.getItem("devicenexus-devices");
-    if (saved) {
-      return JSON.parse(saved);
-    }
-  } catch (e) {
-    console.error("Failed to parse devices from localStorage", e);
-  }
-  return INITIAL_DEVICES;
+  return [...mockDevices];
 }
 
 export function saveDevices(devices) {
-  try {
-    localStorage.setItem("devicenexus-devices", JSON.stringify(devices));
-    mockDevices.length = 0;
-    mockDevices.push(...devices);
-    notifyDataChange();
-  } catch (e) {
-    console.error("Failed to save devices to localStorage", e);
-  }
+  mockDevices.length = 0;
+  mockDevices.push(...devices);
+  notifyDataChange();
 }
 
 export function addDevice(device) {
-  const current = getDevices();
-  const updated = [...current, device];
-  saveDevices(updated);
-  return updated;
+  mockDevices.push(device);
+  notifyDataChange();
+  return [...mockDevices];
+}
+
+// Interactions Access & Helpers
+export function getInteractions() {
+  return [...mockInteractions];
+}
+
+export function saveInteractions(interactions) {
+  mockInteractions.length = 0;
+  mockInteractions.push(...interactions);
+  notifyDataChange();
+}
+
+export function addInteraction(interaction) {
+  mockInteractions.unshift(interaction);
+  notifyDataChange();
+  return [...mockInteractions];
 }
 
 // Service Requests Access & Helpers
 export function getServiceRequests() {
-  try {
-    const saved = localStorage.getItem("devicenexus-service-requests");
-    if (saved) {
-      return JSON.parse(saved);
-    }
-  } catch (e) {
-    console.error("Failed to parse service requests from localStorage", e);
-  }
-  return INITIAL_SERVICE_REQUESTS;
+  return [...mockServiceRequests];
 }
 
 export function saveServiceRequests(requests) {
-  try {
-    localStorage.setItem("devicenexus-service-requests", JSON.stringify(requests));
-    mockServiceRequests.length = 0;
-    mockServiceRequests.push(...requests);
-    notifyDataChange();
-  } catch (e) {
-    console.error("Failed to save service requests to localStorage", e);
-  }
+  mockServiceRequests.length = 0;
+  mockServiceRequests.push(...requests);
+  notifyDataChange();
 }
 
 export function addServiceRequest(request) {
-  const current = getServiceRequests();
-  const updated = [request, ...current];
-  saveServiceRequests(updated);
-  return updated;
+  mockServiceRequests.unshift(request);
+  notifyDataChange();
+  return [...mockServiceRequests];
 }
 
 export function updateServiceRequestStatus(id, newStatus) {
-  const current = getServiceRequests();
-  const updated = current.map((req) =>
-    req.id === id ? { ...req, status: newStatus } : req
-  );
-  saveServiceRequests(updated);
-  return updated;
+  const index = mockServiceRequests.findIndex((req) => req.id === id);
+  if (index !== -1) {
+    mockServiceRequests[index] = {
+      ...mockServiceRequests[index],
+      status: newStatus,
+    };
+  }
+  notifyDataChange();
+  return [...mockServiceRequests];
 }
 
 // Warranty Access & Helpers
 export function getWarranties() {
-  try {
-    const saved = localStorage.getItem("devicenexus-warranties");
-    if (saved) {
-      return JSON.parse(saved);
-    }
-  } catch (e) {
-    console.error("Failed to parse warranties from localStorage", e);
-  }
-  return INITIAL_WARRANTIES;
+  return [...mockWarranties];
 }
 
 export function saveWarranties(warranties) {
-  try {
-    localStorage.setItem("devicenexus-warranties", JSON.stringify(warranties));
-    mockWarranties.length = 0;
-    mockWarranties.push(...warranties);
-    notifyDataChange();
-  } catch (e) {
-    console.error("Failed to save warranties to localStorage", e);
-  }
+  mockWarranties.length = 0;
+  mockWarranties.push(...warranties);
+  notifyDataChange();
 }
 
 export function addWarranty(warranty) {
-  const current = getWarranties();
-  const updated = [warranty, ...current];
-  saveWarranties(updated);
-  return updated;
+  mockWarranties.unshift(warranty);
+  notifyDataChange();
+  return [...mockWarranties];
 }
 
 export function extendWarranty(id, additionalYears = 1) {
-  const current = getWarranties();
-  const updated = current.map((w) => {
-    if (w.id === id) {
-      const currentExpiry = new Date(w.expiryDate);
-      currentExpiry.setFullYear(currentExpiry.getFullYear() + additionalYears);
-      const newExpiryStr = currentExpiry.toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-      return {
-        ...w,
-        expiryDate: newExpiryStr,
-        status: "Active",
-        daysRemaining: (w.daysRemaining || 0) + additionalYears * 365,
-      };
-    }
-    return w;
-  });
-  saveWarranties(updated);
-  return updated;
+  const index = mockWarranties.findIndex((w) => w.id === id);
+  if (index !== -1) {
+    const w = mockWarranties[index];
+    const currentExpiry = new Date(w.expiryDate);
+    currentExpiry.setFullYear(currentExpiry.getFullYear() + additionalYears);
+    const newExpiryStr = currentExpiry.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+    mockWarranties[index] = {
+      ...w,
+      expiryDate: newExpiryStr,
+      status: "Active",
+      daysRemaining: (w.daysRemaining || 0) + additionalYears * 365,
+    };
+  }
+  notifyDataChange();
+  return [...mockWarranties];
 }
-
-// In-memory exports initialized from storage or defaults
-export const mockCustomers = [...getCustomers()];
-export const mockDevices = [...getDevices()];
-export const mockServiceRequests = [...getServiceRequests()];
-export const mockWarranties = [...getWarranties()];
 
 
