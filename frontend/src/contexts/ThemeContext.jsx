@@ -5,13 +5,9 @@ const ThemeContext = createContext();
 export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('devicenexus-theme') || 'system';
-  });
+  const [theme, setTheme] = useState('system');
 
   useEffect(() => {
-    localStorage.setItem('devicenexus-theme', theme);
-
     const root = document.documentElement;
 
     const applyTheme = (themeName) => {
