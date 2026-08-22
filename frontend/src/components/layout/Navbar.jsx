@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import "./Navbar.css";
 import { useLocation, useNavigate } from "react-router";
+import { useAuth } from "../../contexts/AuthContext";
+import LoginModal from "../common/LoginModal/LoginModal";
 
 const pageTitles = {
   "/": "Dashboard",
@@ -10,6 +12,7 @@ const pageTitles = {
   "/warranty": "Warranty",
   "/interactions": "Interactions",
   "/settings": "Settings",
+  "/profile": "Profile",
 };
 
 const INITIAL_NOTIFICATIONS = [
@@ -37,7 +40,6 @@ const INITIAL_NOTIFICATIONS = [
     unread: true,
     type: "warranty",
   },
-
   {
     id: "notif-5",
     title: "Service Request Update",
@@ -52,8 +54,11 @@ function Navbar({ onToggleSidebar }) {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { user, logout } = useAuth();
+
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
 
   const dropdownRef = useRef(null);
@@ -113,6 +118,18 @@ function Navbar({ onToggleSidebar }) {
     );
   };
 
+  const handleSignOut = () => {
+    logout();
+    setIsProfileOpen(false);
+  };
+
+  const handleOpenLogin = () => {
+    setIsLoginModalOpen(true);
+    setIsProfileOpen(false);
+  };
+
+  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "A";
+
   return (
     <header className="navbar">
       {/* LEFT */}
@@ -129,12 +146,9 @@ function Navbar({ onToggleSidebar }) {
 
         <div className="page-title">
           <span className="breadcrumb">Workspace</span>
-
           <h2>{currentPage}</h2>
         </div>
       </div>
-
-
 
       {/* RIGHT */}
       <div className="navbar-right">
@@ -248,12 +262,11 @@ function Navbar({ onToggleSidebar }) {
             aria-expanded={isProfileOpen}
             aria-haspopup="true"
           >
-            <div className="user-avatar">A</div>
+            <div className="user-avatar">{userInitial}</div>
 
             <div className="user-info">
-              <span className="user-name">Admin</span>
-
-              <span className="user-role">Service Manager</span>
+              <span className="user-name">{user?.name || "Admin"}</span>
+              <span className="user-role">{user?.role || "Service Manager"}</span>
             </div>
 
             <span className="user-arrow">▾</span>
@@ -262,10 +275,19 @@ function Navbar({ onToggleSidebar }) {
           {isProfileOpen && (
             <div className="profile-dropdown">
               <div className="dropdown-header">
-                <span className="dropdown-name">Admin</span>
-                <span className="dropdown-role">Service Manager</span>
+                <span className="dropdown-name">{user?.name || "Admin"}</span>
+                <span className="dropdown-role">{user?.role || "Service Manager"}</span>
               </div>
               <div className="dropdown-divider"></div>
+              
+              <button
+                className="dropdown-item"
+                type="button"
+                onClick={handleOpenLogin}
+              >
+                <span className="dropdown-icon">🔑</span> Switch User / Sign In
+              </button>
+
               <button
                 className="dropdown-item"
                 type="button"
@@ -276,6 +298,7 @@ function Navbar({ onToggleSidebar }) {
               >
                 <span className="dropdown-icon">👤</span> My Profile
               </button>
+              
               <button
                 className="dropdown-item"
                 type="button"
@@ -286,16 +309,13 @@ function Navbar({ onToggleSidebar }) {
               >
                 <span className="dropdown-icon">⚙</span> Account Settings
               </button>
+              
               <div className="dropdown-divider"></div>
+              
               <button
                 className="dropdown-item text-danger"
                 type="button"
-                onClick={() => {
-                  alert(
-                    "Sign out will be available with authentication in a future submission."
-                  );
-                  setIsProfileOpen(false);
-                }}
+                onClick={handleSignOut}
               >
                 <span className="dropdown-icon">🚪</span> Sign Out
               </button>
@@ -303,8 +323,14 @@ function Navbar({ onToggleSidebar }) {
           )}
         </div>
       </div>
+
+      {/* Login / Sign In Modal */}
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
     </header>
   );
 }
 
-export default Navbar;
+export default Navbar;

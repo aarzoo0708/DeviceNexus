@@ -14,9 +14,11 @@ import {
   getWarranties,
   onDataChange,
 } from "../data/mockData";
+import { useAuth } from "../contexts/AuthContext";
 
 function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Dynamic counts using simple React state
   const [customerCount, setCustomerCount] = useState(() => getCustomers().length);
@@ -51,7 +53,7 @@ function Dashboard() {
       <div className="dashboard-header">
         <div>
           <p className="dashboard-subtitle">OVERVIEW</p>
-          <h1>Good morning, Admin 👋</h1>
+          <h1>Good morning, {user?.name || "Admin"} 👋</h1>
           <span>
             Here's what's happening across your service operations today.
           </span>
