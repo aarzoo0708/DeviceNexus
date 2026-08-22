@@ -2,20 +2,20 @@ import { useState } from "react";
 import PageHeader from "../components/common/PageHeader/PageHeader";
 import Button from "../components/common/Button/Button";
 import Card from "../components/common/Card/Card";
+import { useAuth } from "../contexts/AuthContext";
 import "./Profile.css";
 
-const initialProfile = {
-  name: "Admin User",
-  email: "admin@devicenexus.com",
-  phone: "9876543210",
-  role: "Service Manager",
-  department: "Customer Service"
-};
-
 function Profile() {
+  const { user, login } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [profileData, setProfileData] = useState(initialProfile);
-  const [editData, setEditData] = useState(initialProfile);
+  const [profileData, setProfileData] = useState({
+    name: user?.name || "Admin User",
+    email: user?.email || "admin@devicenexus.com",
+    phone: "9876543210",
+    role: user?.role || "Service Manager",
+    department: "Customer Service",
+  });
+  const [editData, setEditData] = useState(profileData);
   const [errors, setErrors] = useState({});
   const [successMsg, setSuccessMsg] = useState("");
 
@@ -56,6 +56,11 @@ function Profile() {
   const handleSave = () => {
     if (validate()) {
       setProfileData(editData);
+      login({
+        name: editData.name,
+        role: editData.role,
+        email: editData.email,
+      });
       setIsEditing(false);
       setSuccessMsg("Profile updated successfully.");
       setTimeout(() => setSuccessMsg(""), 3000);
