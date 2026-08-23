@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import PageHeader from "../components/common/PageHeader/PageHeader";
 import Button from "../components/common/Button/Button";
 import SearchInput from "../components/common/SearchInput/SearchInput";
 import DataTable from "../components/common/DataTable/DataTable";
-import Badge from "../components/common/Badge/Badge";
 import WarrantyFilters from "../components/warranty/WarrantyFilters";
 import WarrantyDetailModal from "../components/warranty/WarrantyDetailModal";
 import RegisterWarrantyModal from "../components/warranty/RegisterWarrantyModal";
+import { columns, getWarrantyTableData } from "../components/warranty/WarrantyTableConfig";
 import {
   getWarranties,
   addWarranty,
@@ -29,42 +29,36 @@ function Warranty() {
   }, []);
 
   // Compute status counts for filter chips
-  const counts = useMemo(() => {
-    const countMap = {
-      All: warranties.length,
-      Active: 0,
-      "Expiring Soon": 0,
-      Expired: 0,
-    };
+  const counts = {
+    All: warranties.length,
+    Active: 0,
+    "Expiring Soon": 0,
+    Expired: 0,
+  };
 
-    warranties.forEach((w) => {
-      if (countMap[w.status] !== undefined) {
-        countMap[w.status]++;
-      }
-    });
-
-    return countMap;
-  }, [warranties]);
+  warranties.forEach((w) => {
+    if (counts[w.status] !== undefined) {
+      counts[w.status]++;
+    }
+  });
 
   // Filter warranties by search query and active status
-  const filteredWarranties = useMemo(() => {
-    return warranties.filter((w) => {
-      const matchesStatus =
-        activeStatus === "All" || w.status === activeStatus;
+  const filteredWarranties = warranties.filter((w) => {
+    const matchesStatus =
+      activeStatus === "All" || w.status === activeStatus;
 
-      const query = searchQuery.toLowerCase().trim();
-      const matchesSearch =
-        !query ||
-        w.id.toLowerCase().includes(query) ||
-        w.deviceName.toLowerCase().includes(query) ||
-        w.customerName.toLowerCase().includes(query) ||
-        w.serialNumber.toLowerCase().includes(query) ||
-        w.warrantyType.toLowerCase().includes(query) ||
-        w.provider.toLowerCase().includes(query);
+    const query = searchQuery.toLowerCase().trim();
+    const matchesSearch =
+      !query ||
+      w.id.toLowerCase().includes(query) ||
+      w.deviceName.toLowerCase().includes(query) ||
+      w.customerName.toLowerCase().includes(query) ||
+      w.serialNumber.toLowerCase().includes(query) ||
+      w.warrantyType.toLowerCase().includes(query) ||
+      w.provider.toLowerCase().includes(query);
 
-      return matchesStatus && matchesSearch;
-    });
-  }, [warranties, activeStatus, searchQuery]);
+    return matchesStatus && matchesSearch;
+  });
 
   // Handler for adding a new warranty
   const handleRegisterWarranty = (newWarranty) => {
@@ -86,81 +80,7 @@ function Warranty() {
     );
   };
 
-  const getStatusVariant = (status) => {
-    switch (status) {
-      case "Active":
-        return "success";
-      case "Expiring Soon":
-        return "warning";
-      case "Expired":
-        return "danger";
-      default:
-        return "default";
-    }
-  };
-
-  const columns = [
-    { key: "warrantyId", label: "Policy ID" },
-    { key: "device", label: "Device & Serial" },
-    { key: "customer", label: "Customer" },
-    { key: "coverageType", label: "Coverage / Provider" },
-    { key: "expiry", label: "Expiry Date" },
-    { key: "status", label: "Status" },
-    { key: "actions", label: "Actions" },
-  ];
-
-  const tableData = filteredWarranties.map((w) => ({
-    id: w.id,
-    warrantyId: (
-      <span className="table-warranty-id">{w.id}</span>
-    ),
-    device: (
-      <div>
-        <div className="table-device-name">{w.deviceName}</div>
-        <div className="table-subtext">{w.serialNumber} • {w.deviceType}</div>
-      </div>
-    ),
-    customer: (
-      <div>
-        <div className="table-customer-name">{w.customerName}</div>
-        <div className="table-subtext">{w.customerPhone}</div>
-      </div>
-    ),
-    coverageType: (
-      <div>
-        <div className="table-plan-name">{w.warrantyType}</div>
-        <div className="table-subtext">{w.provider}</div>
-      </div>
-    ),
-    expiry: (
-      <div>
-        <div className="table-expiry-date">{w.expiryDate}</div>
-        {w.status === "Active" && (
-          <div className="table-subtext text-success">{w.daysRemaining} days left</div>
-        )}
-        {w.status === "Expiring Soon" && (
-          <div className="table-subtext text-warning">⚠️ {w.daysRemaining} days left</div>
-        )}
-        {w.status === "Expired" && (
-          <div className="table-subtext text-danger">Expired</div>
-        )}
-      </div>
-    ),
-    status: (
-      <Badge variant={getStatusVariant(w.status)}>
-        {w.status}
-      </Badge>
-    ),
-    actions: (
-      <button
-        type="button"
-        className="table-action-btn"
-        onClick={() => setSelectedWarranty(w)}
-      >
-        View Policy
-      </button>
-    ),
-  }));
+  const tableData = getWarrantyTableData(filteredWarranties, setSelectedWarranty);
 
   // KPI Summary stats
   const totalActive = warranties.filter((w) => w.status === "Active").length;

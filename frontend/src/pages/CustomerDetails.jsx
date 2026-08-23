@@ -6,6 +6,12 @@ import Card from "../components/common/Card/Card";
 import Badge from "../components/common/Badge/Badge";
 import DataTable from "../components/common/DataTable/DataTable";
 import { mockCustomers } from "../data/mockData";
+import {
+  deviceColumns,
+  getFormattedDevices,
+  serviceColumns,
+  getFormattedServices,
+} from "../components/customers/CustomerDetailsTableConfig";
 import "./Customers.css";
 
 function CustomerDetails() {
@@ -40,42 +46,8 @@ function CustomerDetails() {
   if (customer.status === "Pending") badgeVariant = "warning";
   if (customer.status === "Inactive") badgeVariant = "danger";
 
-  const deviceColumns = [
-    { key: "name", label: "Device Name" },
-    { key: "type", label: "Type" },
-    { key: "status", label: "Status" },
-    { key: "warranty", label: "Warranty" }
-  ];
-
-  const formattedDevices = customer.registeredDevices.map(device => ({
-    ...device,
-    status: <Badge variant={device.status === "Active" ? "success" : "default"}>{device.status}</Badge>,
-    warranty: <Badge variant={device.warranty === "Valid" ? "success" : "warning"}>{device.warranty}</Badge>
-  }));
-
-  const serviceColumns = [
-    { key: "id", label: "Request ID" },
-    { key: "issue", label: "Issue" },
-    { key: "device", label: "Device" },
-    { key: "priority", label: "Priority" },
-    { key: "status", label: "Status" }
-  ];
-
-  const formattedServices = customer.serviceHistory.map(req => {
-    let reqStatusVariant = "default";
-    if (req.status === "Resolved") reqStatusVariant = "success";
-    if (req.status === "In Progress") reqStatusVariant = "warning";
-
-    let priorityVariant = "default";
-    if (req.priority === "High") priorityVariant = "danger";
-    if (req.priority === "Medium") priorityVariant = "warning";
-
-    return {
-      ...req,
-      status: <Badge variant={reqStatusVariant}>{req.status}</Badge>,
-      priority: <Badge variant={priorityVariant}>{req.priority}</Badge>
-    };
-  });
+  const formattedDevices = getFormattedDevices(customer.registeredDevices);
+  const formattedServices = getFormattedServices(customer.serviceHistory);
 
   return (
     <div className="page-container">

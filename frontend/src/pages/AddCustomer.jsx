@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import PageHeader from "../components/common/PageHeader/PageHeader";
 import Button from "../components/common/Button/Button";
 import Card from "../components/common/Card/Card";
+import CustomerForm from "../components/customers/CustomerForm";
 import { getCustomers, addCustomer } from "../data/mockData";
 import "./Customers.css";
 
@@ -91,94 +92,13 @@ function AddCustomer() {
 
       <Card>
         <div className="customer-card-content">
-          <form onSubmit={handleSubmit} style={{ display: "grid", gap: "20px" }}>
-            
-            <div style={{ display: "grid", gap: "5px" }}>
-              <label htmlFor="name" style={{ fontWeight: 500 }}>Full Name</label>
-              <input
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                style={{ padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
-              />
-              {errors.name && <span style={{ color: "red", fontSize: "0.85em" }}>{errors.name}</span>}
-            </div>
-
-            <div style={{ display: "grid", gap: "5px" }}>
-              <label htmlFor="email" style={{ fontWeight: 500 }}>Email</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                style={{ padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
-              />
-              {errors.email && <span style={{ color: "red", fontSize: "0.85em" }}>{errors.email}</span>}
-            </div>
-
-            <div style={{ display: "grid", gap: "5px" }}>
-              <label htmlFor="phone" style={{ fontWeight: 500 }}>Phone</label>
-              <input
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                style={{ padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
-              />
-              {errors.phone && <span style={{ color: "red", fontSize: "0.85em" }}>{errors.phone}</span>}
-            </div>
-
-            <div style={{ display: "grid", gap: "5px" }}>
-              <label htmlFor="address" style={{ fontWeight: 500 }}>Address</label>
-              <input
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                style={{ padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
-              />
-              {errors.address && <span style={{ color: "red", fontSize: "0.85em" }}>{errors.address}</span>}
-            </div>
-
-            <div className="customer-grid-2">
-              <div style={{ display: "grid", gap: "5px" }}>
-                <label htmlFor="customerType" style={{ fontWeight: 500 }}>Customer Type</label>
-                <select
-                  id="customerType"
-                  name="customerType"
-                  value={formData.customerType}
-                  onChange={handleChange}
-                  style={{ padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
-                >
-                  <option value="Individual">Individual</option>
-                  <option value="Business">Business</option>
-                </select>
-              </div>
-
-              <div style={{ display: "grid", gap: "5px" }}>
-                <label htmlFor="status" style={{ fontWeight: 500 }}>Status</label>
-                <select
-                  id="status"
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                  style={{ padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
-                >
-                  <option value="Active">Active</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Inactive">Inactive</option>
-                </select>
-              </div>
-            </div>
-
-            <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "10px" }}>
-              <Button type="button" variant="outline" onClick={() => navigate("/customers")}>Cancel</Button>
-              <Button type="submit">Add Customer</Button>
-            </div>
-
-          </form>
+          <CustomerForm
+            formData={formData}
+            errors={errors}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+            onCancel={() => navigate("/customers")}
+          />
         </div>
       </Card>
     </div>

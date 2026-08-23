@@ -3,6 +3,8 @@ import "./Navbar.css";
 import { useLocation, useNavigate } from "react-router";
 import { useAuth } from "../../contexts/AuthContext";
 import LoginModal from "../common/LoginModal/LoginModal";
+import NotificationDropdown from "./NotificationDropdown";
+import ProfileDropdown from "./ProfileDropdown";
 
 const pageTitles = {
   "/": "Dashboard",
@@ -167,89 +169,14 @@ function Navbar({ onToggleSidebar }) {
           </button>
 
           {isNotificationOpen && (
-            <div className="notification-dropdown">
-              <div className="notification-header">
-                <div className="notification-title-area">
-                  <h3>Notifications</h3>
-                  {unreadCount > 0 && (
-                    <span className="unread-count-pill">{unreadCount} new</span>
-                  )}
-                </div>
-
-                <div className="notification-header-actions">
-                  {unreadCount > 0 && (
-                    <button
-                      type="button"
-                      className="notif-action-btn"
-                      onClick={handleMarkAllAsRead}
-                    >
-                      Mark read
-                    </button>
-                  )}
-                  {notifications.length > 0 && (
-                    <button
-                      type="button"
-                      className="notif-action-btn danger"
-                      onClick={handleClearAll}
-                    >
-                      Clear all
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <div className="notification-list">
-                {notifications.length > 0 ? (
-                  notifications.map((item) => (
-                    <div
-                      key={item.id}
-                      className={`notification-item ${
-                        item.unread ? "unread" : ""
-                      }`}
-                      onClick={() => handleNotificationClick(item.id)}
-                    >
-                      <div className={`notification-icon-badge ${item.type}`}>
-                        {item.type === "customer" && "👥"}
-                        {item.type === "device" && "💻"}
-                        {item.type === "warranty" && "⚠️"}
-                        {item.type === "request" && "⚡"}
-                      </div>
-
-                      <div className="notification-body">
-                        <div className="notification-item-header">
-                          <span className="notification-item-title">
-                            {item.title}
-                          </span>
-                          <span className="notification-item-time">
-                            {item.time}
-                          </span>
-                        </div>
-                        <p className="notification-item-message">
-                          {item.message}
-                        </p>
-                      </div>
-
-                      <button
-                        type="button"
-                        className="notif-dismiss-btn"
-                        aria-label="Dismiss notification"
-                        onClick={(e) => handleDismissNotification(item.id, e)}
-                      >
-                        &times;
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <div className="notification-empty-state">
-                    <span className="empty-bell-icon">🔔</span>
-                    <p className="empty-title">No notifications</p>
-                    <p className="empty-desc">
-                      You're all caught up! Check back later for updates.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
+            <NotificationDropdown
+              notifications={notifications}
+              unreadCount={unreadCount}
+              onMarkAllAsRead={handleMarkAllAsRead}
+              onClearAll={handleClearAll}
+              onNotificationClick={handleNotificationClick}
+              onDismissNotification={handleDismissNotification}
+            />
           )}
         </div>
 
@@ -273,53 +200,12 @@ function Navbar({ onToggleSidebar }) {
           </button>
 
           {isProfileOpen && (
-            <div className="profile-dropdown">
-              <div className="dropdown-header">
-                <span className="dropdown-name">{user?.name || "Admin"}</span>
-                <span className="dropdown-role">{user?.role || "Service Manager"}</span>
-              </div>
-              <div className="dropdown-divider"></div>
-              
-              <button
-                className="dropdown-item"
-                type="button"
-                onClick={handleOpenLogin}
-              >
-                <span className="dropdown-icon">🔑</span> Switch User / Sign In
-              </button>
-
-              <button
-                className="dropdown-item"
-                type="button"
-                onClick={() => {
-                  navigate("/profile");
-                  setIsProfileOpen(false);
-                }}
-              >
-                <span className="dropdown-icon">👤</span> My Profile
-              </button>
-              
-              <button
-                className="dropdown-item"
-                type="button"
-                onClick={() => {
-                  navigate("/settings");
-                  setIsProfileOpen(false);
-                }}
-              >
-                <span className="dropdown-icon">⚙</span> Account Settings
-              </button>
-              
-              <div className="dropdown-divider"></div>
-              
-              <button
-                className="dropdown-item text-danger"
-                type="button"
-                onClick={handleSignOut}
-              >
-                <span className="dropdown-icon">🚪</span> Sign Out
-              </button>
-            </div>
+            <ProfileDropdown
+              user={user}
+              onClose={() => setIsProfileOpen(false)}
+              onOpenLogin={handleOpenLogin}
+              onSignOut={handleSignOut}
+            />
           )}
         </div>
       </div>
