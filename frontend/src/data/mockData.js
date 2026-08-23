@@ -558,8 +558,6 @@ export const INITIAL_INTERACTIONS = [
   }
 ];
 
-];
-
 // Helper functions for in-memory data access & component notification
 const DATA_CHANGE_EVENT = "devicenexus-data-change";
 
