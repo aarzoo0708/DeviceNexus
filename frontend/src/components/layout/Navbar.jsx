@@ -5,6 +5,13 @@ import { useAuth } from "../../contexts/AuthContext";
 import LoginModal from "../common/LoginModal/LoginModal";
 import NotificationDropdown from "./NotificationDropdown";
 import ProfileDropdown from "./ProfileDropdown";
+import {
+  getCustomers,
+  getDevices,
+  getServiceRequests,
+  getWarranties,
+  getInteractions,
+} from "../../data/mockData";
 
 const pageTitles = {
   "/": "Dashboard",
@@ -62,6 +69,8 @@ function Navbar({ onToggleSidebar }) {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
+  const [searchQuery, setSearchQuery] = useState("");
+const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const dropdownRef = useRef(null);
   const notificationRef = useRef(null);
@@ -116,7 +125,7 @@ function Navbar({ onToggleSidebar }) {
 
   const handleNotificationClick = (id) => {
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, unread: false } : n))
+      prev.map((n) => (n.id === id ? { ...n, unread: false } : n)),
     );
   };
 
@@ -129,6 +138,112 @@ function Navbar({ onToggleSidebar }) {
     setIsLoginModalOpen(true);
     setIsProfileOpen(false);
   };
+
+  const query = searchQuery.trim().toLowerCase();
+
+const searchResults = query
+  ? [
+      ...getCustomers()
+        .filter((customer) =>
+          [customer.id, customer.name, customer.email, customer.phone]
+            .join(" ")
+            .toLowerCase()
+            .includes(query)
+        )
+        .map((customer) => ({
+          id: customer.id,
+          type: "Customer",
+          title: customer.name,
+          detail: customer.email,
+          path: `/customers/${customer.id}`,
+        })),
+
+      ...getDevices()
+        .filter((device) =>
+          [
+            device.id,
+            device.name,
+            device.model,
+            device.customer,
+            device.serialNumber,
+          ]
+            .join(" ")
+            .toLowerCase()
+            .includes(query)
+        )
+        .map((device) => ({
+          id: device.id,
+          type: "Device",
+          title: device.name,
+          detail: device.id,
+          path: "/devices",
+        })),
+
+      ...getServiceRequests()
+        .filter((request) =>
+          [
+            request.id,
+            request.customerName,
+            request.deviceName,
+            request.issue,
+            request.status,
+          ]
+            .join(" ")
+            .toLowerCase()
+            .includes(query)
+        )
+        .map((request) => ({
+          id: request.id,
+          type: "Service Request",
+          title: request.id,
+          detail: `${request.customerName} · ${request.issue}`,
+          path: "/service-requests",
+        })),
+
+      ...getWarranties()
+        .filter((warranty) =>
+          [
+            warranty.id,
+            warranty.deviceName,
+            warranty.customerName,
+            warranty.serialNumber,
+            warranty.provider,
+            warranty.status,
+          ]
+            .join(" ")
+            .toLowerCase()
+            .includes(query)
+        )
+        .map((warranty) => ({
+          id: warranty.id,
+          type: "Warranty",
+          title: warranty.deviceName,
+          detail: warranty.id,
+          path: "/warranty",
+        })),
+
+      ...getInteractions()
+        .filter((interaction) =>
+          [
+            interaction.id,
+            interaction.customerName,
+            interaction.subject,
+            interaction.notes,
+            interaction.staff,
+          ]
+            .join(" ")
+            .toLowerCase()
+            .includes(query)
+        )
+        .map((interaction) => ({
+          id: interaction.id,
+          type: "Interaction",
+          title: interaction.subject,
+          detail: interaction.customerName,
+          path: "/interactions",
+        })),
+    ].slice(0, 8)
+  : [];
 
   const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "A";
 
@@ -151,6 +266,67 @@ function Navbar({ onToggleSidebar }) {
           <h2>{currentPage}</h2>
         </div>
       </div>
+
+      <div className="navbar-search">
+  <div className="navbar-search-input">
+    <span aria-hidden="true">⌕</span>
+    <input
+      type="text"
+      value={searchQuery}
+      placeholder="Search customers, devices, requests..."
+      aria-label="Search all records"
+      aria-expanded={isSearchOpen}
+      onFocus={() => setIsSearchOpen(true)}
+      onChange={(event) => {
+        setSearchQuery(event.target.value);
+        setIsSearchOpen(true);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          setSearchQuery("");
+          setIsSearchOpen(false);
+        }
+      }}
+    />
+    {searchQuery && (
+      <button
+        type="button"
+        aria-label="Clear search"
+        onClick={() => {
+          setSearchQuery("");
+          setIsSearchOpen(false);
+        }}
+      >
+        ×
+      </button>
+    )}
+  </div>
+
+  {isSearchOpen && searchQuery.trim() && (
+    <div className="navbar-search-results">
+      {searchResults.length > 0 ? (
+        searchResults.map((result) => (
+          <button
+            type="button"
+            className="navbar-search-result"
+            key={`${result.type}-${result.id}`}
+            onClick={() => {
+              navigate(result.path);
+              setSearchQuery("");
+              setIsSearchOpen(false);
+            }}
+          >
+            <span className="navbar-search-result-type">{result.type}</span>
+            <strong>{result.title}</strong>
+            <small>{result.detail}</small>
+          </button>
+        ))
+      ) : (
+        <p className="navbar-search-empty">No matching records found.</p>
+      )}
+    </div>
+  )}
+</div>
 
       {/* RIGHT */}
       <div className="navbar-right">
@@ -193,7 +369,9 @@ function Navbar({ onToggleSidebar }) {
 
             <div className="user-info">
               <span className="user-name">{user?.name || "Admin"}</span>
-              <span className="user-role">{user?.role || "Service Manager"}</span>
+              <span className="user-role">
+                {user?.role || "Service Manager"}
+              </span>
             </div>
 
             <span className="user-arrow">▾</span>
