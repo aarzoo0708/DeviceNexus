@@ -12,11 +12,16 @@ function AddDeviceModal({ onClose, onSubmit }) {
     serialNumber: "",
     purchaseDate: new Date().toISOString().split("T")[0],
   });
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!newDevice.name.trim() || !newDevice.customer.trim()) return;
-    onSubmit(newDevice);
+    const newErrors = {};
+    if (!newDevice.name.trim()) newErrors.name = "Device name is required.";
+    if (!newDevice.customer.trim()) newErrors.customer = "Customer name is required.";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+    onSubmit({ ...newDevice, name: newDevice.name.trim(), customer: newDevice.customer.trim() });
   };
 
   return (
@@ -47,6 +52,7 @@ function AddDeviceModal({ onClose, onSubmit }) {
                   setNewDevice({ ...newDevice, name: e.target.value })
                 }
               />
+              {errors.name && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.name}</small>}
             </div>
 
             <div className="form-group">
@@ -61,6 +67,7 @@ function AddDeviceModal({ onClose, onSubmit }) {
                   setNewDevice({ ...newDevice, customer: e.target.value })
                 }
               />
+              {errors.customer && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.customer}</small>}
             </div>
 
             <div className="form-group">

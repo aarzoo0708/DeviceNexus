@@ -15,6 +15,7 @@ function RegisterWarrantyModal({ onClose, onSubmit }) {
     durationYears: 1,
     coverage: "Manufacturing defect and hardware breakdown support.",
   });
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,6 +24,16 @@ function RegisterWarrantyModal({ onClose, onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const newErrors = {};
+    if (!customers.some((customer) => customer.id === formData.customerId)) {
+      newErrors.customerId = "Select a customer.";
+    }
+    if (!devices.some((device) => device.id === formData.deviceId)) {
+      newErrors.deviceId = "Select a device.";
+    }
+    if (!formData.provider.trim()) newErrors.provider = "Warranty provider is required.";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
 
     const selectedCustomer = customers.find((c) => c.id === formData.customerId);
     const selectedDevice = devices.find((d) => d.id === formData.deviceId);
@@ -41,7 +52,7 @@ function RegisterWarrantyModal({ onClose, onSubmit }) {
       customerName: selectedCustomer?.name || "Customer",
       customerPhone: selectedCustomer?.phone || "9999999999",
       warrantyType: formData.warrantyType,
-      provider: formData.provider,
+      provider: formData.provider.trim(),
       purchaseDate: startDate.toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "short",
@@ -98,6 +109,7 @@ function RegisterWarrantyModal({ onClose, onSubmit }) {
                   </option>
                 ))}
               </select>
+              {errors.customerId && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.customerId}</small>}
             </div>
 
             <div className="form-group">
@@ -115,6 +127,7 @@ function RegisterWarrantyModal({ onClose, onSubmit }) {
                   </option>
                 ))}
               </select>
+              {errors.deviceId && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.deviceId}</small>}
             </div>
           </div>
 
@@ -161,6 +174,7 @@ function RegisterWarrantyModal({ onClose, onSubmit }) {
               onChange={handleChange}
               required
             />
+            {errors.provider && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.provider}</small>}
           </div>
 
           <div className="form-group">

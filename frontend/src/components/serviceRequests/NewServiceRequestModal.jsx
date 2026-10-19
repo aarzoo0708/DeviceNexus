@@ -15,6 +15,7 @@ function NewServiceRequestModal({ onClose, onSubmit }) {
     assignedTo: "Sameer Verma (Sr. Technician)",
     notes: "",
   });
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,7 +24,12 @@ function NewServiceRequestModal({ onClose, onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.issue.trim()) return;
+    const newErrors = {};
+    if (!formData.customerId) newErrors.customerId = "Select a customer.";
+    if (!formData.deviceId) newErrors.deviceId = "Select a device.";
+    if (!formData.issue.trim()) newErrors.issue = "Issue description is required.";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
 
     const selectedCustomer = customers.find((c) => c.id === formData.customerId);
     const selectedDevice = devices.find((d) => d.id === formData.deviceId);
@@ -37,7 +43,7 @@ function NewServiceRequestModal({ onClose, onSubmit }) {
       deviceId: formData.deviceId,
       deviceName: selectedDevice?.name || "Customer Device",
       deviceType: selectedDevice?.type || "Hardware",
-      issue: formData.issue,
+      issue: formData.issue.trim(),
       priority: formData.priority,
       status: "New",
       assignedTo: formData.assignedTo,
@@ -94,6 +100,7 @@ function NewServiceRequestModal({ onClose, onSubmit }) {
                   </option>
                 ))}
               </select>
+              {errors.customerId && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.customerId}</small>}
             </div>
 
             <div className="form-group">
@@ -111,6 +118,7 @@ function NewServiceRequestModal({ onClose, onSubmit }) {
                   </option>
                 ))}
               </select>
+              {errors.deviceId && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.deviceId}</small>}
             </div>
           </div>
 
@@ -125,6 +133,7 @@ function NewServiceRequestModal({ onClose, onSubmit }) {
               onChange={handleChange}
               required
             />
+            {errors.issue && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.issue}</small>}
           </div>
 
           <div className="form-row">

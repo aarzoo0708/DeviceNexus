@@ -3,6 +3,7 @@ import Button from "../common/Button/Button";
 
 function EditDeviceModal({ device, onClose, onSubmit }) {
   const [editingDevice, setEditingDevice] = useState(device);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     setEditingDevice(device);
@@ -12,7 +13,12 @@ function EditDeviceModal({ device, onClose, onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(editingDevice);
+    const newErrors = {};
+    if (!editingDevice.name.trim()) newErrors.name = "Device name is required.";
+    if (!editingDevice.customer.trim()) newErrors.customer = "Customer name is required.";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+    onSubmit({ ...editingDevice, name: editingDevice.name.trim(), customer: editingDevice.customer.trim() });
   };
 
   return (
@@ -42,6 +48,7 @@ function EditDeviceModal({ device, onClose, onSubmit }) {
                   setEditingDevice({ ...editingDevice, name: e.target.value })
                 }
               />
+              {errors.name && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.name}</small>}
             </div>
 
             <div className="form-group">
@@ -58,6 +65,7 @@ function EditDeviceModal({ device, onClose, onSubmit }) {
                   })
                 }
               />
+              {errors.customer && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.customer}</small>}
             </div>
 
             <div className="form-group">
