@@ -29,6 +29,7 @@ function Interactions() {
     notes: "",
     staff: "Aman Gupta",
   });
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     const updateData = () => setInteractions(getInteractions());
@@ -75,7 +76,13 @@ function Interactions() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (!formData.subject.trim()) return;
+    const newErrors = {};
+    if (!formData.customerId) newErrors.customerId = "Select a customer.";
+    if (!formData.subject.trim()) newErrors.subject = "Subject is required.";
+    if (!formData.notes.trim()) newErrors.notes = "Discussion notes are required.";
+    if (!formData.staff.trim()) newErrors.staff = "Staff member is required.";
+    setFormErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
 
     const selectedCust = customers.find((c) => c.id === formData.customerId);
 
@@ -87,20 +94,21 @@ function Interactions() {
       customerPhone: selectedCust?.phone || "9999999999",
       channel: formData.channel,
       icon: getChannelIcon(formData.channel),
-      subject: formData.subject,
-      notes: formData.notes,
+      subject: formData.subject.trim(),
+      notes: formData.notes.trim(),
       date: now.toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "short",
         year: "numeric",
       }),
       time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      staff: formData.staff,
+      staff: formData.staff.trim(),
       type: "Support",
     };
 
     addInteraction(newEntry);
     setIsModalOpen(false);
+    setFormErrors({});
     setFormData({
       customerId: customers[0]?.id || "",
       channel: "Phone Call",
@@ -212,6 +220,7 @@ function Interactions() {
           onClose={() => setIsModalOpen(false)}
           onChange={handleFormChange}
           onSubmit={handleFormSubmit}
+          errors={formErrors}
         />
       )}
     </div>

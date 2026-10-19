@@ -35,6 +35,15 @@ function AddCustomer() {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = "Full Name is required.";
     
+    const customers = getCustomers();
+const emailExists = customers.some(
+  (customer) => customer.email.toLowerCase() === formData.email.trim().toLowerCase()
+);
+
+if (emailExists) {
+  newErrors.email = "A customer with this email already exists.";
+}
+
     if (!formData.email.trim()) {
       newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -60,9 +69,9 @@ function AddCustomer() {
       const newId = `CUST-${String(currentCustomers.length + 1).padStart(3, '0')}`;
       const newCustomer = {
         id: newId,
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
         devices: 0,
         status: formData.status,
         joinedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),

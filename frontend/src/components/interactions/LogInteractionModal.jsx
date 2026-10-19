@@ -4,6 +4,7 @@ import Button from "../common/Button/Button";
 function LogInteractionModal({
   customers,
   formData,
+  errors,
   onClose,
   onChange,
   onSubmit,
@@ -47,6 +48,7 @@ function LogInteractionModal({
                   </option>
                 ))}
               </select>
+              {errors.customerId && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.customerId}</small>}
             </div>
 
             <div className="form-group">
@@ -76,6 +78,7 @@ function LogInteractionModal({
               onChange={onChange}
               required
             />
+            {errors.subject && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.subject}</small>}
           </div>
 
           <div className="form-group">
@@ -89,6 +92,7 @@ function LogInteractionModal({
               onChange={onChange}
               required
             />
+            {errors.notes && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.notes}</small>}
           </div>
 
           <div className="form-group">
@@ -101,6 +105,7 @@ function LogInteractionModal({
               onChange={onChange}
               required
             />
+            {errors.staff && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.staff}</small>}
           </div>
 
           <div className="modal-footer form-footer">
