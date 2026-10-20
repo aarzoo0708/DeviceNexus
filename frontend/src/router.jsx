@@ -11,6 +11,7 @@ import ServiceRequests from "./pages/ServiceRequests";
 
 import Warranty from "./pages/Warranty";
 import Interactions from "./pages/Interactions";
+import FollowUps from "./pages/FollowUps";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "interactions",
         Component: Interactions,
+      },
+      {
+        path: "follow-ups",
+        Component: FollowUps,
       },
       {
         path: "settings",

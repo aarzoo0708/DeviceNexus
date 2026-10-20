@@ -24,6 +24,14 @@ const actions = [
     type: "request",
     path: "/service-requests",
     state: { openCreateModal: true }
+  },
+  {
+    label: "Schedule Follow-up",
+    description: "Set customer callback or reminder",
+    icon: "⏰",
+    type: "followup",
+    path: "/follow-ups",
+    state: { openScheduleModal: true }
   }
 ];
 

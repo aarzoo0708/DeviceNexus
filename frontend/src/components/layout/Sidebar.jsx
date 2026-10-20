@@ -50,11 +50,15 @@ const menuSections = [
   {
     title: "RELATIONSHIP",
     items: [
-
       {
         label: "Interactions",
         icon: "💬",
         path: "/interactions",
+      },
+      {
+        label: "Follow-ups",
+        icon: "⏰",
+        path: "/follow-ups",
       },
     ],
   },
