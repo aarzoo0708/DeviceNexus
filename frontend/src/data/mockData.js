@@ -558,6 +558,156 @@ export const INITIAL_INTERACTIONS = [
   }
 ];
 
+export const INITIAL_FOLLOW_UPS = [
+  {
+    id: "FLP-201",
+    customerId: "CUST-001",
+    customerName: "Rahul Sharma",
+    customerPhone: "9876543210",
+    customerEmail: "rahul@example.com",
+    relatedType: "Service Request",
+    relatedId: "REQ-1024",
+    relatedTitle: "Dell XPS 15 - Keyboard replacement",
+    subject: "Keyboard Replacement Diagnostic & Quote Callback",
+    notes: "Call customer to explain liquid damage findings and get confirmation on estimated replacement cost (₹4,500).",
+    channel: "Phone Call",
+    dueDate: "2026-10-18",
+    dueTime: "11:30 AM",
+    priority: "High",
+    status: "Overdue",
+    assignedStaff: "Sameer Verma",
+    createdAt: "2026-10-16",
+    completedAt: null,
+    completionNotes: "",
+  },
+  {
+    id: "FLP-202",
+    customerId: "CUST-002",
+    customerName: "Priya Kapoor",
+    customerPhone: "9812345678",
+    customerEmail: "priya@example.com",
+    relatedType: "Service Request",
+    relatedId: "REQ-1023",
+    relatedTitle: "MacBook Pro M2 - Battery draining",
+    subject: "Battery Health Diagnostic Result Update",
+    notes: "Battery cycle count is 1120. Update Priya regarding battery replacement options and turn-around time.",
+    channel: "Phone Call",
+    dueDate: "2026-10-21",
+    dueTime: "03:00 PM",
+    priority: "Medium",
+    status: "Upcoming",
+    assignedStaff: "Aman Gupta",
+    createdAt: "2026-10-17",
+    completedAt: null,
+    completionNotes: "",
+  },
+  {
+    id: "FLP-203",
+    customerId: "CUST-003",
+    customerName: "Amit Patel",
+    customerPhone: "9823456789",
+    customerEmail: "amit@example.com",
+    relatedType: "Service Request",
+    relatedId: "REQ-1022",
+    relatedTitle: "Samsung Galaxy S23 - Screen flickering",
+    subject: "Critical OLED Panel Calibration & Testing Update",
+    notes: "Check if screen flickering stopped after display recalibration. Confirm delivery time.",
+    channel: "WhatsApp",
+    dueDate: "2026-10-20",
+    dueTime: "04:45 PM",
+    priority: "Critical",
+    status: "Upcoming",
+    assignedStaff: "Aman Gupta",
+    createdAt: "2026-10-18",
+    completedAt: null,
+    completionNotes: "",
+  },
+  {
+    id: "FLP-204",
+    customerId: "CUST-005",
+    customerName: "Vikram Singh",
+    customerPhone: "9845678901",
+    customerEmail: "vikram@example.com",
+    relatedType: "Interaction",
+    relatedId: "INT-1005",
+    relatedTitle: "Warranty status follow-up discussion",
+    subject: "Annual Maintenance Contract (AMC) Renewal Callback",
+    notes: "Follow up on AMC renewal offer sent via email for multiple enterprise devices.",
+    channel: "Phone Call",
+    dueDate: "2026-10-19",
+    dueTime: "10:00 AM",
+    priority: "Medium",
+    status: "Overdue",
+    assignedStaff: "Support Team",
+    createdAt: "2026-10-15",
+    completedAt: null,
+    completionNotes: "",
+  },
+  {
+    id: "FLP-205",
+    customerId: "CUST-004",
+    customerName: "Sneha Desai",
+    customerPhone: "9834567890",
+    customerEmail: "sneha@example.com",
+    relatedType: "Interaction",
+    relatedId: "INT-1007",
+    relatedTitle: "Walk-in diagnostics follow-up",
+    subject: "Send Diagnostic Report & Estimate via WhatsApp",
+    notes: "Customer asked for detailed diagnostic report for insurance reimbursement claim.",
+    channel: "WhatsApp",
+    dueDate: "2026-10-22",
+    dueTime: "01:30 PM",
+    priority: "Low",
+    status: "Upcoming",
+    assignedStaff: "Sameer Verma",
+    createdAt: "2026-10-19",
+    completedAt: null,
+    completionNotes: "",
+  },
+  {
+    id: "FLP-206",
+    customerId: "CUST-001",
+    customerName: "Rahul Sharma",
+    customerPhone: "9876543210",
+    customerEmail: "rahul@example.com",
+    relatedType: "Interaction",
+    relatedId: "INT-1008",
+    relatedTitle: "Payment link sent & pickup confirmation",
+    subject: "Payment Confirmation & Delivery Slot Finalization",
+    notes: "Payment received of ₹3,200 via UPI. Dispatched device via local courier.",
+    channel: "Phone Call",
+    dueDate: "2026-10-15",
+    dueTime: "05:00 PM",
+    priority: "Medium",
+    status: "Completed",
+    assignedStaff: "Aman Gupta",
+    createdAt: "2026-10-14",
+    completedAt: "15 Oct 2026, 05:25 PM",
+    completionNotes: "Confirmed payment received and tracked package tracking number shared with customer.",
+  },
+  {
+    id: "FLP-207",
+    customerId: "CUST-002",
+    customerName: "Priya Kapoor",
+    customerPhone: "9812345678",
+    customerEmail: "priya@example.com",
+    relatedType: "Interaction",
+    relatedId: "INT-1006",
+    relatedTitle: "Device pickup confirmation",
+    subject: "Post-Service Satisfaction Check",
+    notes: "Check if MacBook Pro M2 is performing well post pickup.",
+    channel: "Email",
+    dueDate: "2026-10-16",
+    dueTime: "12:00 PM",
+    priority: "Low",
+    status: "Completed",
+    assignedStaff: "Support Team",
+    createdAt: "2026-10-14",
+    completedAt: "16 Oct 2026, 12:15 PM",
+    completionNotes: "Customer sent email stating device is working perfectly. 5-star rating received.",
+  },
+];
+
 // Helper functions for in-memory data access & component notification
 const DATA_CHANGE_EVENT = "devicenexus-data-change";
 
@@ -581,6 +731,7 @@ export const mockDevices = [...INITIAL_DEVICES];
 export const mockServiceRequests = [...INITIAL_SERVICE_REQUESTS];
 export const mockWarranties = [...INITIAL_WARRANTIES];
 export const mockInteractions = [...INITIAL_INTERACTIONS];
+export const mockFollowUps = [...INITIAL_FOLLOW_UPS];
 
 // Customers Access & Helpers
 export function getCustomers() {
@@ -700,5 +851,108 @@ export function extendWarranty(id, additionalYears = 1) {
   notifyDataChange();
   return [...mockWarranties];
 }
+
+// Follow-ups Access & Helpers
+function parseTime(timeStr) {
+  if (!timeStr) return "23:59:59";
+  const match = timeStr.trim().match(/^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?$/i);
+  if (!match) return timeStr;
+  let [_, hours, minutes, ampm] = match;
+  let h = parseInt(hours, 10);
+  if (ampm) {
+    const isPM = ampm.toUpperCase() === "PM";
+    if (isPM && h < 12) h += 12;
+    if (!isPM && h === 12) h = 0;
+  }
+  return `${String(h).padStart(2, "0")}:${minutes}:00`;
+}
+
+export function computeFollowUpStatus(item) {
+  if (item.status === "Completed") return "Completed";
+  if (!item.dueDate) return item.status || "Upcoming";
+  const timePart = parseTime(item.dueTime);
+  const dueDateTime = new Date(`${item.dueDate}T${timePart}`);
+  const now = new Date();
+  if (!isNaN(dueDateTime.getTime()) && dueDateTime < now) {
+    return "Overdue";
+  }
+  return "Upcoming";
+}
+
+export function getFollowUps() {
+  return mockFollowUps.map((item) => ({
+    ...item,
+    status: computeFollowUpStatus(item),
+  }));
+}
+
+export function saveFollowUps(followUps) {
+  mockFollowUps.length = 0;
+  mockFollowUps.push(...followUps);
+  notifyDataChange();
+}
+
+export function addFollowUp(followUp) {
+  mockFollowUps.unshift({
+    ...followUp,
+    status: computeFollowUpStatus(followUp),
+  });
+  notifyDataChange();
+  return getFollowUps();
+}
+
+export function markFollowUpCompleted(id, completionNotes = "") {
+  const index = mockFollowUps.findIndex((f) => f.id === id);
+  if (index !== -1) {
+    const now = new Date();
+    const completedAtStr = `${now.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })}, ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+
+    mockFollowUps[index] = {
+      ...mockFollowUps[index],
+      status: "Completed",
+      completedAt: completedAtStr,
+      completionNotes: completionNotes || mockFollowUps[index].completionNotes || "Marked as completed by staff.",
+    };
+  }
+  notifyDataChange();
+  return getFollowUps();
+}
+
+export function rescheduleFollowUp(id, newDate, newTime, reason = "") {
+  const index = mockFollowUps.findIndex((f) => f.id === id);
+  if (index !== -1) {
+    const existing = mockFollowUps[index];
+    const updatedNotes = reason
+      ? `${existing.notes ? existing.notes + "\n" : ""}[Rescheduled to ${newDate} ${newTime || ""}: ${reason}]`
+      : existing.notes;
+
+    const updatedItem = {
+      ...existing,
+      dueDate: newDate,
+      dueTime: newTime || existing.dueTime,
+      status: "Upcoming",
+      completedAt: null,
+      notes: updatedNotes,
+    };
+    updatedItem.status = computeFollowUpStatus(updatedItem);
+    mockFollowUps[index] = updatedItem;
+  }
+  notifyDataChange();
+  return getFollowUps();
+}
+
+export function deleteFollowUp(id) {
+  const index = mockFollowUps.findIndex((f) => f.id === id);
+  if (index !== -1) {
+    mockFollowUps.splice(index, 1);
+  }
+  notifyDataChange();
+  return getFollowUps();
+}
+
 
 

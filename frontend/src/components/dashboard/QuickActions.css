@@ -85,6 +85,11 @@
   color: var(--warning);
 }
 
+.action-icon.followup {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
 
 
 .action-content {

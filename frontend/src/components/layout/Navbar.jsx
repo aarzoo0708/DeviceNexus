@@ -11,6 +11,7 @@ import {
   getServiceRequests,
   getWarranties,
   getInteractions,
+  getFollowUps,
 } from "../../data/mockData";
 
 const pageTitles = {
@@ -20,6 +21,7 @@ const pageTitles = {
   "/service-requests": "Service Requests",
   "/warranty": "Warranty",
   "/interactions": "Interactions",
+  "/follow-ups": "Follow-ups",
   "/settings": "Settings",
   "/profile": "Profile",
 };
@@ -241,6 +243,28 @@ const searchResults = query
           title: interaction.subject,
           detail: interaction.customerName,
           path: "/interactions",
+        })),
+
+      ...getFollowUps()
+        .filter((followUp) =>
+          [
+            followUp.id,
+            followUp.customerName,
+            followUp.subject,
+            followUp.notes,
+            followUp.assignedStaff,
+            followUp.relatedId,
+          ]
+            .join(" ")
+            .toLowerCase()
+            .includes(query)
+        )
+        .map((followUp) => ({
+          id: followUp.id,
+          type: "Follow-up",
+          title: followUp.subject,
+          detail: `${followUp.customerName} · ${followUp.dueDate} (${followUp.status})`,
+          path: "/follow-ups",
         })),
     ].slice(0, 8)
   : [];
