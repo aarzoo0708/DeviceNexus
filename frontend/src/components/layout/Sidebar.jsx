@@ -38,7 +38,11 @@ const menuSections = [
         icon: "⚡",
         path: "/service-requests",
       },
-
+      {
+        label: "Repairs",
+        icon: "🔧",
+        path: "/repairs",
+      },
       {
         label: "Warranty",
         icon: "◷",

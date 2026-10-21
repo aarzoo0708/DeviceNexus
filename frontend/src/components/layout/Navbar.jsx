@@ -9,6 +9,7 @@ import {
   getCustomers,
   getDevices,
   getServiceRequests,
+  getRepairs,
   getWarranties,
   getInteractions,
   getFollowUps,
@@ -19,6 +20,7 @@ const pageTitles = {
   "/customers": "Customers",
   "/devices": "Devices",
   "/service-requests": "Service Requests",
+  "/repairs": "Repairs",
   "/warranty": "Warranty",
   "/interactions": "Interactions",
   "/follow-ups": "Follow-ups",
@@ -200,6 +202,29 @@ const searchResults = query
           title: request.id,
           detail: `${request.customerName} · ${request.issue}`,
           path: "/service-requests",
+        })),
+
+      ...getRepairs()
+        .filter((repair) =>
+          [
+            repair.id,
+            repair.customerName,
+            repair.deviceName,
+            repair.deviceModel,
+            repair.issue,
+            repair.status,
+            repair.assignedTechnician,
+          ]
+            .join(" ")
+            .toLowerCase()
+            .includes(query)
+        )
+        .map((repair) => ({
+          id: repair.id,
+          type: "Repair",
+          title: repair.id,
+          detail: `${repair.customerName} · ${repair.deviceName} (${repair.status})`,
+          path: "/repairs",
         })),
 
       ...getWarranties()
