@@ -427,6 +427,217 @@ export const INITIAL_WARRANTIES = [
     claims: [],
   },
 ];
+
+export const INITIAL_REPAIRS = [
+  {
+    id: "REP-1001",
+    customerId: "CUST-001",
+    customerName: "Rahul Sharma",
+    customerPhone: "9876543210",
+    customerEmail: "rahul@example.com",
+    deviceId: "DEV-1003",
+    deviceName: "Dell XPS 15",
+    deviceModel: "i9-13900H (32GB / 1TB RTX 4060)",
+    deviceType: "Laptop",
+    serialNumber: "DL-8840192-X",
+    issue: "GPU overheating under render load & fans rattling at maximum RPM",
+    assignedTechnician: "Sameer Verma (Sr. Technician)",
+    priority: "High",
+    status: "In Progress",
+    estimatedCost: 145,
+    dateReceived: "2026-10-18",
+    estimatedCompletion: "2026-10-23",
+    notes: "Thermal paste degraded. Ultrasonically cleaned dual cooling fans. Replacing thermal interface material with phase-change pads.",
+    partsRequired: "Dual High-RPM Blower Fans, Thermal Grizzly KryoSheet",
+    timeline: [
+      { status: "New", date: "18 Oct 2026, 09:30 AM", note: "Customer dropped off device at service desk" },
+      { status: "Assigned", date: "18 Oct 2026, 11:15 AM", note: "Assigned to Senior Hardware Specialist Sameer Verma" },
+      { status: "In Progress", date: "19 Oct 2026, 02:40 PM", note: "Disassembly complete. Heat sink desoldered and ultrasonic bath finished" }
+    ]
+  },
+  {
+    id: "REP-1002",
+    customerId: "CUST-002",
+    customerName: "Priya Kapoor",
+    customerPhone: "9812345678",
+    customerEmail: "priya@example.com",
+    deviceId: "DEV-1002",
+    deviceName: "iPhone 15 Pro",
+    deviceModel: "256GB Natural Titanium",
+    deviceType: "Smartphone",
+    serialNumber: "F17GL901PQ2A",
+    issue: "Shattered Super Retina OLED display & intermittent touch response",
+    assignedTechnician: "Aman Gupta (Display Specialist)",
+    priority: "Critical",
+    status: "Waiting for Parts",
+    estimatedCost: 260,
+    dateReceived: "2026-10-19",
+    estimatedCompletion: "2026-10-25",
+    notes: "Ceramic Shield cracked diagonally. Front sensor array undamaged. OEM OLED panel ordered from authorized distributor.",
+    partsRequired: "Apple OEM 6.1\" OLED Assembly with TrueDepth alignment bracket",
+    timeline: [
+      { status: "New", date: "19 Oct 2026, 10:15 AM", note: "Device intake recorded with accidental damage claim" },
+      { status: "Assigned", date: "19 Oct 2026, 11:00 AM", note: "Assigned to Aman Gupta" },
+      { status: "Waiting for Parts", date: "20 Oct 2026, 03:20 PM", note: "Part PO #AP-9902 placed with regional distributor. ETA 2 business days" }
+    ]
+  },
+  {
+    id: "REP-1003",
+    customerId: "CUST-003",
+    customerName: "Amit Patel",
+    customerPhone: "9823456789",
+    customerEmail: "amit@example.com",
+    deviceId: "DEV-106",
+    deviceName: "Samsung Galaxy S23",
+    deviceModel: "Snapdragon 8 Gen 2 (8GB / 256GB)",
+    deviceType: "Smartphone",
+    serialNumber: "SM-S911B-2023",
+    issue: "Swollen lithium-ion battery causing rear glass panel separation",
+    assignedTechnician: "Rohan Mehta (Chip-Level Hardware Tech)",
+    priority: "Critical",
+    status: "Completed",
+    estimatedCost: 85,
+    dateReceived: "2026-10-14",
+    estimatedCompletion: "2026-10-16",
+    notes: "Safely extracted degraded pouch battery. Installed new 3,900 mAh battery and re-sealed with waterproof IP68 gasket tape.",
+    partsRequired: "Genuine Samsung EB-BS911ABY Battery, OEM Back Cover Adhesive",
+    timeline: [
+      { status: "New", date: "14 Oct 2026, 11:00 AM", note: "Urgent drop-in: battery swelling identified" },
+      { status: "Assigned", date: "14 Oct 2026, 11:30 AM", note: "Assigned to Rohan Mehta" },
+      { status: "In Progress", date: "14 Oct 2026, 01:15 PM", note: "Cold extraction and safe discharge protocol completed" },
+      { status: "Completed", date: "16 Oct 2026, 04:30 PM", note: "Post-repair 100% charging cycle verified. Passed QC bench test" }
+    ]
+  },
+  {
+    id: "REP-1004",
+    customerId: "CUST-004",
+    customerName: "Sneha Desai",
+    customerPhone: "9834567890",
+    customerEmail: "sneha@example.com",
+    deviceId: "DEV-1004",
+    deviceName: "iPad Pro 12.9\"",
+    deviceModel: "M2 Cellular 512GB Space Gray",
+    deviceType: "Tablet",
+    serialNumber: "DMPZ9021LX99",
+    issue: "Damaged USB-C Thunderbolt port not negotiating power or data delivery",
+    assignedTechnician: "Pooja Nair (Micro-soldering & Diagnostics)",
+    priority: "Medium",
+    status: "In Progress",
+    estimatedCost: 175,
+    dateReceived: "2026-10-17",
+    estimatedCompletion: "2026-10-22",
+    notes: "Bent pins inside Type-C receptacle. Board removed for hot-air microsoldering of replacement 24-pin connector.",
+    partsRequired: "Thunderbolt 4 / USB 4 Receptacle Connector SMD",
+    timeline: [
+      { status: "New", date: "17 Oct 2026, 02:00 PM", note: "Intake completed with power meter diagnostic" },
+      { status: "Assigned", date: "17 Oct 2026, 03:45 PM", note: "Assigned to micro-soldering specialist Pooja Nair" },
+      { status: "In Progress", date: "18 Oct 2026, 10:30 AM", note: "Pre-heating logic board. Removing damaged port assembly" }
+    ]
+  },
+  {
+    id: "REP-1005",
+    customerId: "CUST-005",
+    customerName: "Vikram Singh",
+    customerPhone: "9845678901",
+    customerEmail: "vikram@example.com",
+    deviceId: "DEV-1005",
+    deviceName: "ThinkPad X1 Carbon",
+    deviceModel: "Gen 11 i7-1365U 16GB",
+    deviceType: "Laptop",
+    serialNumber: "PF-49X821",
+    issue: "Corrupted NVMe boot partition & recurring blue screen kernel panic",
+    assignedTechnician: "Sameer Verma (Sr. Technician)",
+    priority: "High",
+    status: "Completed",
+    estimatedCost: 210,
+    dateReceived: "2026-10-15",
+    estimatedCompletion: "2026-10-17",
+    notes: "Rescued 380GB user documents to cold storage. Cloned onto new Samsung 990 Pro 1TB PCIe 4.0 drive.",
+    partsRequired: "Samsung 990 Pro 1TB NVMe M.2 SSD",
+    timeline: [
+      { status: "New", date: "15 Oct 2026, 09:00 AM", note: "Customer reported unbootable OS" },
+      { status: "Assigned", date: "15 Oct 2026, 10:00 AM", note: "Assigned to Sameer Verma" },
+      { status: "In Progress", date: "15 Oct 2026, 01:30 PM", note: "Direct sector-level NAND recovery in progress" },
+      { status: "Completed", date: "17 Oct 2026, 03:00 PM", note: "All customer partitions restored, OS activated and benchmarked" }
+    ]
+  },
+  {
+    id: "REP-1006",
+    customerId: "CUST-001",
+    customerName: "Rahul Sharma",
+    customerPhone: "9876543210",
+    customerEmail: "rahul@example.com",
+    deviceId: "DEV-1001",
+    deviceName: "MacBook Pro 16\"",
+    deviceModel: "Apple M2 Max (32GB / 1TB)",
+    deviceType: "Laptop",
+    serialNumber: "C02FX390MD6R",
+    issue: "Sticky butterfly switch on spacebar and unresponsive trackpad click",
+    assignedTechnician: "Aman Gupta (Display Specialist)",
+    priority: "Low",
+    status: "New",
+    estimatedCost: 95,
+    dateReceived: "2026-10-21",
+    estimatedCompletion: "2026-10-26",
+    notes: "Awaiting bench inspection. Initial tactile inspection confirms foreign particle intrusion.",
+    partsRequired: "Keycap mechanism set, haptic taptic engine coil calibration",
+    timeline: [
+      { status: "New", date: "21 Oct 2026, 10:00 AM", note: "Customer submitted online repair inquiry" }
+    ]
+  },
+  {
+    id: "REP-1007",
+    customerId: "CUST-002",
+    customerName: "Priya Kapoor",
+    customerPhone: "9812345678",
+    customerEmail: "priya@example.com",
+    deviceId: "DEV-1006",
+    deviceName: "Surface Laptop 5",
+    deviceModel: "Intel Core i7 16GB / 512GB",
+    deviceType: "Laptop",
+    serialNumber: "0293847192",
+    issue: "Damaged magnetic charging connector & short-circuit protection triggered",
+    assignedTechnician: "Pooja Nair (Micro-soldering & Diagnostics)",
+    priority: "Medium",
+    status: "Assigned",
+    estimatedCost: 130,
+    dateReceived: "2026-10-20",
+    estimatedCompletion: "2026-10-24",
+    notes: "Power surge protection active. Inspecting surface connect power rail and charge regulator IC.",
+    partsRequired: "Surface Connect DC Jack harness",
+    timeline: [
+      { status: "New", date: "20 Oct 2026, 11:45 AM", note: "Device received at service counter" },
+      { status: "Assigned", date: "20 Oct 2026, 02:00 PM", note: "Assigned to Pooja Nair for diagnostic assessment" }
+    ]
+  },
+  {
+    id: "REP-1008",
+    customerId: "CUST-004",
+    customerName: "Sneha Desai",
+    customerPhone: "9834567890",
+    customerEmail: "sneha@example.com",
+    deviceId: "DEV-107",
+    deviceName: "Lenovo ThinkPad",
+    deviceModel: "T14 Gen 3 AMD Ryzen 7",
+    deviceType: "Laptop",
+    serialNumber: "L3-991048",
+    issue: "Cracked magnesium alloy screen hinge & severed Wi-Fi antenna cable",
+    assignedTechnician: "Rohan Mehta (Chip-Level Hardware Tech)",
+    priority: "Low",
+    status: "Cancelled",
+    estimatedCost: 160,
+    dateReceived: "2026-10-12",
+    estimatedCompletion: "2026-10-16",
+    notes: "Customer opted out of hardware overhaul due to planned company-wide fleet upgrade.",
+    partsRequired: "Left/Right Hinge Kit, Dual-Band Antenna Wire",
+    timeline: [
+      { status: "New", date: "12 Oct 2026, 09:30 AM", note: "Repair ticket generated" },
+      { status: "Assigned", date: "12 Oct 2026, 10:15 AM", note: "Assigned to Rohan Mehta" },
+      { status: "Cancelled", date: "13 Oct 2026, 11:00 AM", note: "Repair cancelled by customer request before parts ordering" }
+    ]
+  }
+];
+
 export const INITIAL_INTERACTIONS = [
   {
     id: "INT-1001",
@@ -453,14 +664,6 @@ export const INITIAL_INTERACTIONS = [
     channel: "Email",
     icon: "📧",
     staff: "Aman Gupta",
-    customerPhone: "9812345678",
-    subject: "Battery issue update",
-    notes: "Customer was informed that battery diagnostics are required.",
-    date: "17 Aug 2026",
-    time: "02:15 PM",
-    channel: "Email",
-    icon: "📧",
-    staff: "Aman Gupta",
   },
   {
     id: "INT-1003",
@@ -474,27 +677,11 @@ export const INITIAL_INTERACTIONS = [
     channel: "Phone Call",
     icon: "📞",
     staff: "Aman Gupta",
-    customerPhone: "9823456789",
-    subject: "Screen flickering complaint",
-    notes: "Customer was contacted regarding the screen flickering issue.",
-    date: "15 Aug 2026",
-    time: "11:45 AM",
-    channel: "Phone Call",
-    icon: "📞",
-    staff: "Aman Gupta",
   },
   {
     id: "INT-1004",
     customerId: "CUST-004",
     customerName: "Sneha Desai",
-    customerPhone: "9834567890",
-    subject: "Warranty repair confirmation",
-    notes: "Customer was notified that the RAM replacement was completed under warranty.",
-    date: "14 Aug 2026",
-    time: "04:20 PM",
-    channel: "Email",
-    icon: "📧",
-    staff: "Sameer Verma",
     customerPhone: "9834567890",
     subject: "Warranty repair confirmation",
     notes: "Customer was notified that the RAM replacement was completed under warranty.",
@@ -725,11 +912,31 @@ export function onDataChange(callback) {
   return () => {};
 }
 
-// In-memory datasets initialized from default constants
+// In-memory datasets initialized from default constants or localStorage
+const REPAIRS_STORAGE_KEY = "devicenexus_repairs";
+
+function loadStoredRepairs() {
+  if (typeof window !== "undefined") {
+    try {
+      const stored = localStorage.getItem(REPAIRS_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch {
+      // fallback to initial
+    }
+  }
+  return [...INITIAL_REPAIRS];
+}
+
 export const mockCustomers = [...INITIAL_CUSTOMERS];
 export const mockDevices = [...INITIAL_DEVICES];
 export const mockServiceRequests = [...INITIAL_SERVICE_REQUESTS];
 export const mockWarranties = [...INITIAL_WARRANTIES];
+export const mockRepairs = loadStoredRepairs();
 export const mockInteractions = [...INITIAL_INTERACTIONS];
 export const mockFollowUps = [...INITIAL_FOLLOW_UPS];
 
@@ -852,12 +1059,84 @@ export function extendWarranty(id, additionalYears = 1) {
   return [...mockWarranties];
 }
 
+// Repairs Access & Helpers
+function persistRepairs() {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(REPAIRS_STORAGE_KEY, JSON.stringify(mockRepairs));
+    } catch {
+      // storage quota or disabled
+    }
+  }
+  notifyDataChange();
+}
+
+export function getRepairs() {
+  return [...mockRepairs];
+}
+
+export function saveRepairs(repairs) {
+  mockRepairs.length = 0;
+  mockRepairs.push(...repairs);
+  persistRepairs();
+}
+
+export function addRepair(repair) {
+  mockRepairs.unshift(repair);
+  persistRepairs();
+  return [...mockRepairs];
+}
+
+export function updateRepair(updatedRepair) {
+  const index = mockRepairs.findIndex((r) => r.id === updatedRepair.id);
+  if (index !== -1) {
+    mockRepairs[index] = { ...mockRepairs[index], ...updatedRepair };
+    persistRepairs();
+  }
+  return [...mockRepairs];
+}
+
+export function updateRepairStatus(id, newStatus, note = "") {
+  const index = mockRepairs.findIndex((r) => r.id === id);
+  if (index !== -1) {
+    const existing = mockRepairs[index];
+    const nowStr = `${new Date().toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })}, ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+
+    const newTimelineEntry = {
+      status: newStatus,
+      date: nowStr,
+      note: note || `Status updated to ${newStatus}`,
+    };
+
+    mockRepairs[index] = {
+      ...existing,
+      status: newStatus,
+      timeline: [newTimelineEntry, ...(existing.timeline || [])],
+    };
+    persistRepairs();
+  }
+  return [...mockRepairs];
+}
+
+export function deleteRepair(id) {
+  const index = mockRepairs.findIndex((r) => r.id === id);
+  if (index !== -1) {
+    mockRepairs.splice(index, 1);
+    persistRepairs();
+  }
+  return [...mockRepairs];
+}
+
 // Follow-ups Access & Helpers
 function parseTime(timeStr) {
   if (!timeStr) return "23:59:59";
   const match = timeStr.trim().match(/^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?$/i);
   if (!match) return timeStr;
-  let [_, hours, minutes, ampm] = match;
+  let [, hours, minutes, ampm] = match;
   let h = parseInt(hours, 10);
   if (ampm) {
     const isPM = ampm.toUpperCase() === "PM";

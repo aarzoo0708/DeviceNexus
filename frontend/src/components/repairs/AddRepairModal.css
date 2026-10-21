@@ -1,0 +1,97 @@
+.modal-card-repair {
+  max-width: 660px;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+.repair-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px;
+}
+
+.repair-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 580px) {
+  .repair-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.req-star {
+  color: var(--danger);
+  margin-left: 2px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 13px;
+  transition: all var(--transition);
+  outline: none;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.form-control.input-error {
+  border-color: var(--danger);
+  background: var(--danger-light);
+}
+
+.error-text {
+  font-size: 11px;
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.input-currency-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-prefix {
+  position: absolute;
+  left: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.form-control.with-prefix {
+  padding-left: 28px;
+}
+
+.repair-form-footer {
+  margin-top: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}

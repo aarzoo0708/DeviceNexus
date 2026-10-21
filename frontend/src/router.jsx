@@ -8,6 +8,7 @@ import AddCustomer from "./pages/AddCustomer";
 import CustomerDetails from "./pages/CustomerDetails";
 import Devices from "./pages/Devices";
 import ServiceRequests from "./pages/ServiceRequests";
+import Repairs from "./pages/Repairs";
 
 import Warranty from "./pages/Warranty";
 import Interactions from "./pages/Interactions";
@@ -46,7 +47,10 @@ const router = createBrowserRouter([
         path: "service-requests",
         Component: ServiceRequests,
       },
-
+      {
+        path: "repairs",
+        Component: Repairs,
+      },
       {
         path: "warranty",
         Component: Warranty,

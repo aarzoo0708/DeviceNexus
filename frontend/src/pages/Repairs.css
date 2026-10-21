@@ -1,0 +1,383 @@
+.repairs-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Alert Notification Banner */
+.repair-alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  animation: slideDown 0.25s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-success {
+  background: var(--success-light);
+  color: var(--success-text);
+  border: 1px solid var(--success);
+}
+
+.alert-warning {
+  background: var(--warning-light);
+  color: var(--warning-text);
+  border: 1px solid var(--warning);
+}
+
+.alert-icon {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.alert-message {
+  flex: 1;
+}
+
+.alert-close {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.alert-close:hover {
+  opacity: 1;
+}
+
+/* Top Dashboard Summary Cards Grid */
+.repairs-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 992px) {
+  .repairs-dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .repairs-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.repair-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+  cursor: pointer;
+  text-align: left;
+  outline: none;
+}
+
+.repair-stat-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.repair-stat-card.stat-card-active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light), var(--shadow-sm);
+}
+
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-card-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.icon-total {
+  background: var(--surface-hover);
+}
+
+.icon-pending {
+  background: var(--warning-light);
+}
+
+.icon-progress {
+  background: var(--primary-light);
+}
+
+.icon-completed {
+  background: var(--success-light);
+}
+
+.stat-card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.stat-card-subtext {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.text-warning {
+  color: var(--warning) !important;
+}
+
+.text-info {
+  color: var(--info) !important;
+}
+
+.text-success {
+  color: var(--success) !important;
+}
+
+/* Controls */
+.repair-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.repair-search-box {
+  max-width: 440px;
+  width: 100%;
+}
+
+/* Table Specific Cell Styles */
+.table-repair-id-btn {
+  background: transparent;
+  border: none;
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+}
+
+.table-repair-id-btn:hover {
+  background: var(--primary-light);
+  text-decoration: underline;
+}
+
+.table-customer-name,
+.table-device-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.table-subtext {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.table-model-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  max-width: 170px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table-issue-text {
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.table-assigned-name {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.technician-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.tech-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+.technician-unassigned {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.status-cell-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.table-cost-value {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.table-date-value {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Actions Group */
+.table-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.table-action-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.action-view {
+  color: var(--primary);
+}
+
+.action-view:hover {
+  background: var(--primary-light);
+  border-color: var(--primary-light);
+}
+
+.action-edit {
+  color: var(--text-secondary);
+}
+
+.action-edit:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.action-delete {
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 3px 6px;
+}
+
+.action-delete:hover {
+  background: var(--danger-light);
+  color: var(--danger);
+  border-color: var(--danger-light);
+}
+
+.table-quick-status-select {
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: all var(--transition);
+}
+
+.table-quick-status-select:focus {
+  border-color: var(--primary);
+}
+
+/* Empty State */
+.repair-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  gap: 12px;
+}
+
+.empty-icon {
+  font-size: 38px;
+  margin-bottom: 4px;
+}
+
+.repair-empty-state h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.repair-empty-state p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 380px;
+  margin: 0;
+}
+
+.empty-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
