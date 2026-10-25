@@ -77,7 +77,7 @@ function ServicePipeline() {
         {recentRequests.length > 0 ? (
           recentRequests.map((request) => (
             <button
-            type="button"
+              type="button"
               key={request.id}
               className="ui-clickable w-full text-left px-6 py-5 grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[5rem_minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
               onClick={() => navigate(`/service-requests?request=${encodeURIComponent(request.id)}`)}
@@ -89,7 +89,7 @@ function ServicePipeline() {
               </div>
 
               <div className="flex-1 min-w-0 pr-2">
-                <strong className="block text-sm font-semibold text-slate-900 dark:text-white break-words leading-relaxed">
+                <strong className="block text-sm font-semibold text-slate-900 dark:text-white wrap-break-word leading-relaxed">
                   {request.issue}
                 </strong>
                 <span className="block text-xs text-slate-500 dark:text-slate-400 truncate mt-1">

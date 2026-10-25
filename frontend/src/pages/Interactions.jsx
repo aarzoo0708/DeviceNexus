@@ -217,7 +217,7 @@ function Interactions() {
                   </div>
                 </div>
 
-                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed break-words sm:pl-15">
+                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed wrap-break-word sm:pl-15">
                   {item.notes}
                 </p>
 

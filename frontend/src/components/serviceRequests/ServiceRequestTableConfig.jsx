@@ -81,7 +81,7 @@ export const getServiceRequestTableData = (
       ),
       issue: (
         <div
-          className="w-64 whitespace-normal break-words leading-relaxed text-sm text-slate-700 dark:text-slate-300"
+          className="w-64 whitespace-normal wrap-break-word leading-relaxed text-sm text-slate-700 dark:text-slate-300"
           title={req.issue}
         >
           {req.issue}

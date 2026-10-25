@@ -85,7 +85,7 @@ function WarrantyAlert() {
                   </div>
 
                   <div className="flex-1 min-w-0 pr-2">
-                    <strong className="block text-sm font-semibold text-slate-900 dark:text-white break-words">
+                    <strong className="block text-sm font-semibold text-slate-900 dark:text-white wrap-break-word">
                       {info.name}
                     </strong>
                     <span className="block text-xs text-slate-500 dark:text-slate-400 break-all mt-1">

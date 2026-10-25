@@ -42,7 +42,7 @@ function InteractionDetailModal({ interaction, customer, onClose, onViewCustomer
           </div>
           <div>
             <h3 className="mb-2 text-sm font-semibold">Discussion notes</h3>
-            <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-text-secondary">
+            <p className="whitespace-pre-wrap wrap-break-word text-sm leading-relaxed text-text-secondary">
               {interaction.notes}
             </p>
           </div>
