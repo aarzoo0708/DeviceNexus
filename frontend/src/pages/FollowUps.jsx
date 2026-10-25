@@ -1,5 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  FiPlus,
+  FiCalendar,
+  FiCheckCircle,
+  FiCheck,
+  FiClock,
+  FiAlertCircle,
+  FiList,
+  FiGrid,
+  FiEye,
+  FiPhone,
+  FiMessageSquare,
+  FiMail,
+  FiInbox,
+} from "react-icons/fi";
 import PageHeader from "../components/common/PageHeader/PageHeader";
 import Button from "../components/common/Button/Button";
 import SearchInput from "../components/common/SearchInput/SearchInput";
@@ -12,41 +28,41 @@ import FollowUpDetailModal from "../components/followUps/FollowUpDetailModal";
 import FollowUpFilters from "../components/followUps/FollowUpFilters";
 
 import {
-  getFollowUps,
   addFollowUp,
-  markFollowUpCompleted,
+  completeFollowUp,
   rescheduleFollowUp,
-  onDataChange,
-} from "../data/mockData";
-import "./FollowUps.css";
+} from "../store/slices/followUpsSlice";
 
 function FollowUps() {
-  const [followUps, setFollowUps] = useState(() => getFollowUps());
+  const [searchParams] = useSearchParams();
+  const dispatch = useDispatch();
+  const followUps = useSelector((state) => state.followUps || []);
+  const customers = useSelector((state) => state.customers || []);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [activePriority, setActivePriority] = useState("All");
   const [viewMode, setViewMode] = useState("cards"); // 'cards' | 'table'
 
-  // Modals state
-  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
-  const [reschedulingItem, setReschedulingItem] = useState(null);
-  const [selectedItem, setSelectedItem] = useState(null);
-
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Modals state
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(
+    () => Boolean(location.state?.openScheduleModal)
+  );
+  const [reschedulingItem, setReschedulingItem] = useState(null);
+  const [selectedItemId, setSelectedItemId] = useState(() => searchParams.get("followUp"));
+
+  const selectedItem = selectedItemId
+    ? followUps.find((item) => item.id === selectedItemId) || null
+    : null;
+
   useEffect(() => {
     if (location.state?.openScheduleModal) {
-      setIsScheduleModalOpen(true);
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, navigate]);
-
-  useEffect(() => {
-    const refreshData = () => setFollowUps(getFollowUps());
-    const unsubscribe = onDataChange(refreshData);
-    return unsubscribe;
-  }, []);
 
   // Compute status counts
   const counts = {
@@ -64,58 +80,42 @@ function FollowUps() {
 
   // Filtered follow-ups
   const filteredFollowUps = followUps.filter((item) => {
-    // Status filter
     const matchesStatus =
       activeFilter === "All" || item.status === activeFilter;
 
-    // Priority filter
     const matchesPriority =
       activePriority === "All" || item.priority === activePriority;
 
-    // Search query
     const q = searchQuery.toLowerCase().trim();
+    if (!q) return matchesStatus && matchesPriority;
+
+    const customer = customers.find((c) => c.id === item.customerId);
+    const customerName = customer ? customer.name.toLowerCase() : (item.customerName || "").toLowerCase();
+
     const matchesSearch =
-      !q ||
-      item.customerName?.toLowerCase().includes(q) ||
-      item.customerPhone?.toLowerCase().includes(q) ||
-      item.subject?.toLowerCase().includes(q) ||
-      item.notes?.toLowerCase().includes(q) ||
-      item.assignedStaff?.toLowerCase().includes(q) ||
-      item.relatedId?.toLowerCase().includes(q) ||
-      item.id?.toLowerCase().includes(q);
+      customerName.includes(q) ||
+      (item.customerPhone && item.customerPhone.toLowerCase().includes(q)) ||
+      (item.subject && item.subject.toLowerCase().includes(q)) ||
+      (item.notes && item.notes.toLowerCase().includes(q)) ||
+      (item.assignedStaff && item.assignedStaff.toLowerCase().includes(q)) ||
+      (item.relatedId && item.relatedId.toLowerCase().includes(q)) ||
+      (item.id && item.id.toLowerCase().includes(q));
 
     return matchesStatus && matchesPriority && matchesSearch;
   });
 
   const handleCreate = (newFollowUp) => {
-    addFollowUp(newFollowUp);
+    dispatch(addFollowUp(newFollowUp));
     setIsScheduleModalOpen(false);
   };
 
-  const handleComplete = (id, completionNotes) => {
-    markFollowUpCompleted(id, completionNotes);
-    if (selectedItem?.id === id) {
-      setSelectedItem((prev) =>
-        prev ? { ...prev, status: "Completed", completionNotes } : null
-      );
-    }
+  const handleComplete = (id, completionNotes = "") => {
+    dispatch(completeFollowUp({ id, completionNotes }));
   };
 
   const handleReschedule = (id, newDate, newTime, reason) => {
-    rescheduleFollowUp(id, newDate, newTime, reason);
+    dispatch(rescheduleFollowUp({ id, newDate, newTime, reason }));
     setReschedulingItem(null);
-    if (selectedItem?.id === id) {
-      setSelectedItem((prev) =>
-        prev
-          ? {
-              ...prev,
-              dueDate: newDate,
-              dueTime: newTime,
-              status: "Upcoming",
-            }
-          : null
-      );
-    }
   };
 
   const getStatusBadge = (status) => {
@@ -146,15 +146,13 @@ function FollowUps() {
   const getChannelIcon = (channel) => {
     switch (channel) {
       case "Phone Call":
-        return "📞";
+        return <FiPhone className="inline text-blue-500" />;
       case "WhatsApp":
-        return "💬";
+        return <FiMessageSquare className="inline text-emerald-500" />;
       case "Email":
-        return "📧";
-      case "Service Visit":
-        return "🏢";
+        return <FiMail className="inline text-purple-500" />;
       default:
-        return "⏰";
+        return <FiClock className="inline" />;
     }
   };
 
@@ -171,140 +169,191 @@ function FollowUps() {
     { key: "actions", label: "Actions" },
   ];
 
-  const tableData = filteredFollowUps.map((item) => ({
-    id: <span style={{ fontWeight: "600" }}>{item.id}</span>,
-    customer: (
-      <div>
-        <div style={{ fontWeight: "600", color: "var(--text-primary)" }}>
-          {item.customerName}
+  const tableData = filteredFollowUps.map((item) => {
+    const customer = customers.find((c) => c.id === item.customerId);
+    const customerName = customer ? customer.name : item.customerName || "Customer";
+    const customerPhone = customer ? customer.phone : item.customerPhone || "";
+
+    return {
+      id: <span className="font-mono text-xs font-bold text-blue-600 dark:text-blue-400">{item.id}</span>,
+      customer: (
+        <div>
+          <div className="font-semibold text-slate-900 dark:text-white text-sm">
+            {customerName}
+          </div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
+            {getChannelIcon(item.channel)} {customerPhone}
+          </div>
         </div>
-        <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>
-          {getChannelIcon(item.channel)} {item.customerPhone}
-        </div>
-      </div>
-    ),
-    subject: (
-      <div
-        style={{ cursor: "pointer", fontWeight: "500", maxWidth: "260px" }}
-        onClick={() => setSelectedItem(item)}
-      >
-        <span style={{ color: "var(--primary)" }}>{item.subject}</span>
+      ),
+      subject: (
         <div
-          style={{
-            fontSize: "11px",
-            color: "var(--text-muted)",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
+          className="cursor-pointer font-medium max-w-65"
+          onClick={() => setSelectedItemId(item.id)}
         >
-          {item.notes}
+          <span className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-semibold block truncate">
+            {item.subject}
+          </span>
+          <div className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+            {item.notes}
+          </div>
         </div>
-      </div>
-    ),
-    related: (
-      <div>
-        <span className="related-pill">{item.relatedId}</span>
-        <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "2px" }}>
-          {item.relatedType}
+      ),
+      related: (
+        <div>
+          <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+            {item.relatedId}
+          </span>
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            {item.relatedType}
+          </div>
         </div>
-      </div>
-    ),
-    dueDate: (
-      <span
-        style={{
-          fontWeight: "600",
-          fontSize: "12px",
-          color: item.status === "Overdue" ? "var(--danger)" : "var(--text-primary)",
-        }}
-      >
-        {item.dueDate} · {item.dueTime}
-      </span>
-    ),
-    priority: getPriorityBadge(item.priority),
-    status: getStatusBadge(item.status),
-    staff: <span style={{ fontSize: "12px" }}>{item.assignedStaff}</span>,
-    actions: (
-      <div style={{ display: "flex", gap: "6px" }}>
-        <button
-          className="card-action-btn"
-          title="View Details"
-          onClick={() => setSelectedItem(item)}
+      ),
+      dueDate: (
+        <span
+          className={`font-medium text-xs ${
+            item.status === "Overdue"
+              ? "text-rose-600 dark:text-rose-400 font-bold"
+              : "text-slate-900 dark:text-slate-200"
+          }`}
         >
-          👁
-        </button>
-        {item.status !== "Completed" && (
-          <>
-            <button
-              className="card-action-btn btn-complete"
-              title="Mark as Completed"
-              onClick={() => handleComplete(item.id)}
-            >
-              ✓
-            </button>
-            <button
-              className="card-action-btn btn-reschedule"
-              title="Reschedule"
-              onClick={() => setReschedulingItem(item)}
-            >
-              📅
-            </button>
-          </>
-        )}
-      </div>
-    ),
-  }));
+          {item.dueDate} · {item.dueTime}
+        </span>
+      ),
+      priority: getPriorityBadge(item.priority),
+      status: getStatusBadge(item.status),
+      staff: <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">{item.assignedStaff}</span>,
+      actions: (
+        <div className="flex gap-1.5 items-center">
+          <button
+            type="button"
+            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 cursor-pointer"
+            title="View Details"
+            onClick={() => setSelectedItemId(item.id)}
+          >
+            <FiEye size={13} />
+          </button>
+          {item.status !== "Completed" && (
+            <>
+              <button
+                type="button"
+                className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 border border-emerald-200 dark:border-emerald-800 cursor-pointer"
+                title="Mark as Completed"
+                onClick={() => handleComplete(item.id)}
+              >
+                <FiCheck size={13} />
+              </button>
+              <button
+                type="button"
+                className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 hover:bg-blue-100 border border-blue-200 dark:border-blue-800 cursor-pointer"
+                title="Reschedule"
+                onClick={() => setReschedulingItem(item)}
+              >
+                <FiCalendar size={13} />
+              </button>
+            </>
+          )}
+        </div>
+      ),
+    };
+  });
 
   return (
-    <div className="page-container followups-page">
+    <div className="space-y-6">
       <PageHeader
         title="Customer Follow-ups"
         description="Schedule, track, and manage customer callbacks, reminder alerts, and quote follow-ups."
         action={
           <Button onClick={() => setIsScheduleModalOpen(true)}>
-            + Schedule Follow-up
+            <span className="inline-flex items-center gap-1.5">
+              <FiPlus size={16} /> Schedule Follow-up
+            </span>
           </Button>
         }
       />
 
       {/* KPI Stats Cards */}
-      <div className="followup-stats-grid">
-        <div className="followup-stat-card">
-          <div className="followup-stat-icon stat-total">📋</div>
-          <div className="followup-stat-info">
-            <span className="followup-stat-number">{counts.All}</span>
-            <span className="followup-stat-label">Total Reminders</span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
+        <div className="panel p-6 shadow-sm min-h-43.75 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wider uppercase">
+              Total Reminders
+            </span>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center text-lg bg-blue-50 dark:bg-slate-800/80 text-blue-600 dark:text-blue-400">
+              <FiList />
+            </div>
+          </div>
+          <div>
+            <div className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              {counts.All}
+            </div>
+            <p className="text-xs font-medium text-emerald-500 mt-2">
+              All scheduled callbacks
+            </p>
           </div>
         </div>
 
-        <div className="followup-stat-card">
-          <div className="followup-stat-icon stat-upcoming">⏰</div>
-          <div className="followup-stat-info">
-            <span className="followup-stat-number">{counts.Upcoming}</span>
-            <span className="followup-stat-label">Upcoming Callbacks</span>
+        <div className="panel p-6 shadow-sm min-h-43.75 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wider uppercase">
+              Upcoming
+            </span>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center text-lg bg-amber-50 dark:bg-slate-800/80 text-amber-500 dark:text-amber-400">
+              <FiClock />
+            </div>
+          </div>
+          <div>
+            <div className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              {counts.Upcoming}
+            </div>
+            <p className="text-xs font-medium text-amber-500 mt-2">
+              Pending callbacks
+            </p>
           </div>
         </div>
 
-        <div className="followup-stat-card">
-          <div className="followup-stat-icon stat-overdue">⚠️</div>
-          <div className="followup-stat-info">
-            <span className="followup-stat-number">{counts.Overdue}</span>
-            <span className="followup-stat-label">Overdue Follow-ups</span>
+        <div className="panel p-6 shadow-sm min-h-43.75 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wider uppercase">
+              Overdue
+            </span>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center text-lg bg-rose-50 dark:bg-slate-800/80 text-rose-500 dark:text-rose-400">
+              <FiAlertCircle />
+            </div>
+          </div>
+          <div>
+            <div className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              {counts.Overdue}
+            </div>
+            <p className="text-xs font-medium text-rose-500 mt-2">
+              Require immediate action
+            </p>
           </div>
         </div>
 
-        <div className="followup-stat-card">
-          <div className="followup-stat-icon stat-completed">✓</div>
-          <div className="followup-stat-info">
-            <span className="followup-stat-number">{counts.Completed}</span>
-            <span className="followup-stat-label">Completed</span>
+        <div className="panel p-6 shadow-sm min-h-43.75 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wider uppercase">
+              Completed
+            </span>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center text-lg bg-emerald-50 dark:bg-slate-800/80 text-emerald-500 dark:text-emerald-400">
+              <FiCheckCircle />
+            </div>
+          </div>
+          <div>
+            <div className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              {counts.Completed}
+            </div>
+            <p className="text-xs font-medium text-emerald-500 mt-2">
+              Successfully finished
+            </p>
           </div>
         </div>
       </div>
 
       {/* Search and Layout Controls */}
-      <div className="followups-controls-bar">
-        <div className="followups-search-wrap">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-1">
+        <div className="w-full max-w-md">
           <SearchInput
             placeholder="Search by customer, phone, subject, staff, notes..."
             value={searchQuery}
@@ -312,150 +361,193 @@ function FollowUps() {
           />
         </div>
 
-        <div className="view-mode-toggle">
+        <div className="flex items-center gap-1 p-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-2xs self-end sm:self-auto">
           <button
             type="button"
-            className={`view-toggle-btn ${viewMode === "cards" ? "active" : ""}`}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+              viewMode === "cards"
+                ? "bg-blue-600 text-white shadow-xs"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            }`}
             onClick={() => setViewMode("cards")}
           >
-            ▦ Cards
+            <FiGrid size={14} /> Cards
           </button>
           <button
             type="button"
-            className={`view-toggle-btn ${viewMode === "table" ? "active" : ""}`}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+              viewMode === "table"
+                ? "bg-blue-600 text-white shadow-xs"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            }`}
             onClick={() => setViewMode("table")}
           >
-            ☰ Table
+            <FiList size={14} /> Table
           </button>
         </div>
       </div>
 
       {/* Filter Tabs Bar */}
-      <FollowUpFilters
-        activeFilter={activeFilter}
-        onSelectFilter={setActiveFilter}
-        counts={counts}
-        activePriority={activePriority}
-        onSelectPriority={setActivePriority}
-      />
+      <div className="pt-1 pb-1">
+        <FollowUpFilters
+          activeFilter={activeFilter}
+          onSelectFilter={setActiveFilter}
+          counts={counts}
+          activePriority={activePriority}
+          onSelectPriority={setActivePriority}
+        />
+      </div>
 
       {/* Main Content Area: Cards or Table */}
       {filteredFollowUps.length > 0 ? (
         viewMode === "cards" ? (
-          <div className="followups-cards-grid">
-            {filteredFollowUps.map((item) => (
-              <div
-                key={item.id}
-                className={`followup-card ${item.status.toLowerCase()}`}
-              >
-                {/* Header: Badges & Due Date */}
-                <div className="followup-card-header">
-                  <div className="followup-badges-wrap">
-                    {getStatusBadge(item.status)}
-                    {getPriorityBadge(item.priority)}
-                    <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>
-                      {item.id}
-                    </span>
-                  </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
+            {filteredFollowUps.map((item) => {
+              const customer = customers.find((c) => c.id === item.customerId);
+              const customerName = customer ? customer.name : item.customerName || "Customer";
+              const customerPhone = customer ? customer.phone : item.customerPhone || "";
 
-                  <span
-                    className={`due-time-tag ${
-                      item.status === "Overdue" ? "overdue" : ""
-                    }`}
-                  >
-                    ⏰ {item.dueDate} · {item.dueTime}
-                  </span>
-                </div>
+              const borderAccent =
+                item.status === "Overdue"
+                  ? "border-l-4 border-l-rose-500"
+                  : item.status === "Completed"
+                  ? "border-l-4 border-l-emerald-500"
+                  : "border-l-4 border-l-blue-500";
 
-                {/* Subject */}
-                <h3
-                  className="followup-card-title"
-                  onClick={() => setSelectedItem(item)}
+              return (
+                <div
+                  key={item.id}
+                  className={`panel p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-5 ${borderAccent}`}
                 >
-                  {item.subject}
-                </h3>
+                  <div className="space-y-3.5">
+                    {/* Header: Badges & Due Date */}
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {getStatusBadge(item.status)}
+                        {getPriorityBadge(item.priority)}
+                        <span className="text-xs text-slate-400 font-mono">
+                          {item.id}
+                        </span>
+                      </div>
 
-                {/* Customer Info Row */}
-                <div className="followup-customer-row">
-                  <div className="customer-name-group">
-                    <div className="customer-avatar">
-                      {item.customerName?.charAt(0) || "C"}
+                      <span
+                        className={`text-xs font-semibold px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5 ${
+                          item.status === "Overdue"
+                            ? "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                        }`}
+                      >
+                        <FiClock size={12} /> {item.dueDate}
+                      </span>
                     </div>
-                    <span>{item.customerName}</span>
-                  </div>
 
-                  <a
-                    href={`tel:${item.customerPhone}`}
-                    className="contact-quick-link"
-                    title={`Call ${item.customerPhone}`}
-                  >
-                    {getChannelIcon(item.channel)} {item.customerPhone}
-                  </a>
-                </div>
-
-                {/* Linked context */}
-                <div className="followup-related-row">
-                  <span className="related-pill">{item.relatedId}</span>
-                  <span className="related-title-text" title={item.relatedTitle}>
-                    {item.relatedTitle}
-                  </span>
-                </div>
-
-                {/* Notes snippet */}
-                <p className="followup-notes-text">{item.notes}</p>
-
-                {/* Footer with Staff & Actions */}
-                <div className="followup-card-footer">
-                  <div className="staff-assigned-tag">
-                    Staff: <strong>{item.assignedStaff}</strong>
-                  </div>
-
-                  <div className="followup-action-buttons">
-                    <button
-                      type="button"
-                      className="card-action-btn"
-                      onClick={() => setSelectedItem(item)}
+                    {/* Subject */}
+                    <h3
+                      className="text-base font-bold text-slate-900 dark:text-white cursor-pointer hover:text-blue-500 transition-colors line-clamp-1"
+                      onClick={() => setSelectedItemId(item.id)}
                     >
-                      Details
-                    </button>
+                      {item.subject}
+                    </h3>
 
-                    {item.status !== "Completed" && (
-                      <>
-                        <button
-                          type="button"
-                          className="card-action-btn btn-reschedule"
-                          onClick={() => setReschedulingItem(item)}
-                        >
-                          📅 Reschedule
-                        </button>
+                    {/* Customer Info Row */}
+                    <div className="flex flex-wrap gap-3 items-center justify-between p-3 bg-slate-50 dark:bg-[#111827] rounded-xl text-xs">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                          {customerName.charAt(0) || "C"}
+                        </div>
+                        <span className="font-semibold text-slate-900 dark:text-white truncate">
+                          {customerName}
+                        </span>
+                      </div>
 
-                        <button
-                          type="button"
-                          className="card-action-btn btn-complete"
-                          onClick={() => handleComplete(item.id)}
+                      {customerPhone && (
+                        <a
+                          href={`tel:${customerPhone}`}
+                          className="text-blue-600 hover:text-blue-700 dark:text-blue-400 flex items-center gap-1.5 font-medium shrink-0 ml-2"
+                          title={`Call ${customerPhone}`}
                         >
-                          ✓ Done
-                        </button>
-                      </>
-                    )}
+                          {getChannelIcon(item.channel)} {customerPhone}
+                        </a>
+                      )}
+                    </div>
+
+                    {/* Linked context */}
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <span className="font-mono text-[11px] font-semibold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 shrink-0">
+                        {item.relatedId}
+                      </span>
+                      <span className="truncate" title={item.relatedTitle}>
+                        {item.relatedTitle}
+                      </span>
+                    </div>
+
+                    {/* Notes snippet */}
+                    <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                      {item.notes}
+                    </p>
+                  </div>
+
+                  {/* Footer with Staff & Actions */}
+                  <div className="pt-4 border-t border-slate-100 dark:border-[#334155] flex flex-wrap items-center justify-between gap-3">
+                    <div className="text-xs text-slate-400">
+                      Staff: <strong className="text-slate-700 dark:text-slate-300 font-semibold">{item.assignedStaff}</strong>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        className="px-3 py-1.5 text-xs font-semibold rounded-xl border border-slate-200 dark:border-[#334155] hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
+                        onClick={() => setSelectedItemId(item.id)}
+                      >
+                        Details
+                      </button>
+
+                      {item.status !== "Completed" && (
+                        <>
+                          <button
+                            type="button"
+                            className="p-2 rounded-xl border border-slate-200 dark:border-[#334155] hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+                            title="Reschedule"
+                            onClick={() => setReschedulingItem(item)}
+                          >
+                            <FiCalendar size={13} />
+                          </button>
+
+                          <button
+                            type="button"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition-colors cursor-pointer"
+                            onClick={() => handleComplete(item.id)}
+                          >
+                            <FiCheck size={13} /> Done
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
-          <DataTable columns={tableColumns} data={tableData} />
+          <DataTable
+            columns={tableColumns}
+            data={tableData}
+            minWidth="min-w-[950px]"
+            emptyMessage="No follow-ups found."
+          />
         )
       ) : (
-        <div className="followups-empty-state">
-          <div className="followups-empty-icon">⏰</div>
-          <h3>No Follow-ups Found</h3>
-          <p>
+        <div className="py-16 text-center panel space-y-3 shadow-xs">
+          <FiInbox className="w-10 h-10 text-slate-400 mx-auto" />
+          <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">
+            No Follow-ups Found
+          </h3>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto">
             {searchQuery
               ? `No reminders or callbacks matched "${searchQuery}".`
               : `No follow-ups currently listed under ${activeFilter}.`}
           </p>
-          <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
             <Button
               variant="secondary"
               onClick={() => {
@@ -470,7 +562,9 @@ function FollowUps() {
               variant="primary"
               onClick={() => setIsScheduleModalOpen(true)}
             >
-              + Schedule Follow-up
+              <span className="inline-flex items-center gap-1.5">
+                <FiPlus size={16} /> Schedule Follow-up
+              </span>
             </Button>
           </div>
         </div>
@@ -497,7 +591,7 @@ function FollowUps() {
       {selectedItem && (
         <FollowUpDetailModal
           followUp={selectedItem}
-          onClose={() => setSelectedItem(null)}
+          onClose={() => setSelectedItemId(null)}
           onMarkCompleted={handleComplete}
           onOpenReschedule={(item) => setReschedulingItem(item)}
         />

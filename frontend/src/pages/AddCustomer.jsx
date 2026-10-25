@@ -1,106 +1,110 @@
-import React, { useState } from "react";
+import { validateName, validateEmail, validatePhone, validateText } from "../utils/validation";
+import { useState } from "react";
 import { useNavigate } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
+import { FiArrowLeft } from "react-icons/fi";
 import PageHeader from "../components/common/PageHeader/PageHeader";
 import Button from "../components/common/Button/Button";
 import Card from "../components/common/Card/Card";
 import CustomerForm from "../components/customers/CustomerForm";
-import { getCustomers, addCustomer } from "../data/mockData";
-import "./Customers.css";
-
+import { addCustomer } from "../store/slices/customersSlice";
 
 function AddCustomer() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const customers = useSelector((state) => state.customers || []);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     address: "",
     customerType: "Individual",
-    status: "Active"
+    status: "Active",
   });
-  
+
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    
-    // Clear the error for a field once the user starts typing
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Clear error as user types
     if (errors[name]) {
-      setErrors({ ...errors, [name]: null });
+      setErrors((prev) => ({ ...prev, [name]: null }));
     }
   };
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Full Name is required.";
-    
-    const customers = getCustomers();
-const emailExists = customers.some(
-  (customer) => customer.email.toLowerCase() === formData.email.trim().toLowerCase()
-);
 
-if (emailExists) {
-  newErrors.email = "A customer with this email already exists.";
-}
+    const nameError = formData.customerType === "Business"
+      ? validateText(formData.name, "Business name", 2, 100)
+      : validateName(formData.name);
+    const emailError = validateEmail(formData.email);
+    const phoneError = validatePhone(formData.phone);
+    const addressError = validateText(formData.address, "Address", 5, 250);
 
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address.";
+    if (nameError) newErrors.name = nameError;
+    if (emailError) newErrors.email = emailError;
+    if (phoneError) newErrors.phone = phoneError;
+    if (addressError) newErrors.address = addressError;
+
+    const emailExists = customers.some(
+      (customer) => customer.email.toLowerCase() === formData.email.trim().toLowerCase()
+    );
+    if (!emailError && emailExists) {
+      newErrors.email = "A customer with this email already exists.";
     }
-    
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone is required.";
-    } else if (!/^\d{7,15}$/.test(formData.phone.replace(/[\s-()]/g, ""))) {
-      newErrors.phone = "Please enter a valid phone number.";
-    }
-    
-    if (!formData.address.trim()) newErrors.address = "Address is required.";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (validate()) {
-      const currentCustomers = getCustomers();
-      const newId = `CUST-${String(currentCustomers.length + 1).padStart(3, '0')}`;
+      const nextNumber = customers.length + 1;
+      const newId = `CUST-${String(nextNumber).padStart(3, "0")}`;
+
       const newCustomer = {
         id: newId,
         name: formData.name.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
-        devices: 0,
+        address: formData.address.trim(),
+        customerType: formData.customerType,
         status: formData.status,
-        joinedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-        registeredDevices: [],
-        serviceHistory: []
+        joinedDate: new Date().toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
       };
 
-      addCustomer(newCustomer);
+      dispatch(addCustomer(newCustomer));
       navigate("/customers");
     }
   };
 
-
   return (
-    <div className="page-container">
-      <div style={{ marginBottom: "20px" }}>
-        {/* Step 12: Cancel behavior mapping back to customers */}
+    <div className="space-y-6">
+      <div>
         <Button variant="outline" onClick={() => navigate("/customers")}>
-          &larr; Back to Customers
+          <span className="inline-flex items-center gap-1.5">
+            <FiArrowLeft size={16} /> Back to Customers
+          </span>
         </Button>
       </div>
 
       <PageHeader
         title="Add Customer"
-        description="Create a new customer profile."
+        description="Create a new customer profile to track their devices and service history."
       />
 
       <Card>
-        <div className="customer-card-content">
+        <div className="p-1">
           <CustomerForm
             formData={formData}
             errors={errors}

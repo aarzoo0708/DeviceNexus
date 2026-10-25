@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
+import { FiPlus, FiEye, FiEdit2, FiTrash2, FiAlertCircle } from "react-icons/fi";
 import PageHeader from "../components/common/PageHeader/PageHeader";
 import Button from "../components/common/Button/Button";
 import Card from "../components/common/Card/Card";
@@ -9,44 +11,59 @@ import Badge from "../components/common/Badge/Badge";
 import ViewDeviceModal from "../components/devices/ViewDeviceModal";
 import EditDeviceModal from "../components/devices/EditDeviceModal";
 import AddDeviceModal from "../components/devices/AddDeviceModal";
-import { getDevices, saveDevices, onDataChange } from "../data/mockData";
-import "./Devices.css";
+import {
+  addDevice,
+  updateDevice,
+  deleteDevice,
+  retireDevice,
+} from "../store/slices/devicesSlice";
 
 function Devices() {
-  const [devices, setDevices] = useState(() => getDevices());
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Redux store state
+  const devices = useSelector((state) => state.devices || []);
+  const customers = useSelector((state) => state.customers || []);
+  const serviceRequests = useSelector((state) => state.serviceRequests || []);
+
+  // Local filter states
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [warrantyFilter, setWarrantyFilter] = useState("All");
 
-  const location = useLocation();
-  const navigate = useNavigate();
+  // Modal States
+  const [isAddModalOpen, setIsAddModalOpen] = useState(
+    () => Boolean(location.state?.openAddModal)
+  );
+  const [viewingDevice, setViewingDevice] = useState(null);
+  const [editingDevice, setEditingDevice] = useState(null);
+  const [notificationMsg, setNotificationMsg] = useState("");
 
   useEffect(() => {
     if (location.state?.openAddModal) {
-      setIsAddModalOpen(true);
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, navigate]);
 
-  useEffect(() => {
-    const updateDevices = () => setDevices(getDevices());
-    const unsubscribe = onDataChange(updateDevices);
-    return unsubscribe;
-  }, []);
+  const showNotification = (msg) => {
+    setNotificationMsg(msg);
+    setTimeout(() => setNotificationMsg(""), 4000);
+  };
 
+  // Helper to find customer name
+  const getCustomerName = (customerId) => {
+    const cust = customers.find((c) => c.id === customerId);
+    return cust ? cust.name : "Unassigned";
+  };
 
-  // Modal States
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [viewingDevice, setViewingDevice] = useState(null);
-  const [editingDevice, setEditingDevice] = useState(null);
-
-  // Badge Variant Helper Functions
+  // Badge Variant Helpers
   const getStatusBadgeVariant = (status) => {
     switch (status) {
       case "Active":
         return "success";
-
       case "Inactive":
         return "default";
       case "Retired":
@@ -72,17 +89,18 @@ function Devices() {
   // Filter Logic
   const filteredDevices = devices.filter((device) => {
     const query = searchQuery.toLowerCase().trim();
+    const customerName = getCustomerName(device.customerId).toLowerCase();
+
     const matchesSearch =
       !query ||
       device.id.toLowerCase().includes(query) ||
       device.name.toLowerCase().includes(query) ||
-      device.model.toLowerCase().includes(query) ||
-      device.customer.toLowerCase().includes(query);
+      (device.model && device.model.toLowerCase().includes(query)) ||
+      (device.serialNumber && device.serialNumber.toLowerCase().includes(query)) ||
+      customerName.includes(query);
 
-    const matchesType =
-      typeFilter === "All" || device.type === typeFilter;
-    const matchesStatus =
-      statusFilter === "All" || device.status === statusFilter;
+    const matchesType = typeFilter === "All" || device.type === typeFilter;
+    const matchesStatus = statusFilter === "All" || device.status === statusFilter;
     const matchesWarranty =
       warrantyFilter === "All" || device.warranty === warrantyFilter;
 
@@ -97,40 +115,67 @@ function Devices() {
       id: `DEV-${nextIdNumber}`,
     };
 
-    const updated = [...devices, createdDevice];
-    saveDevices(updated);
+    dispatch(addDevice(createdDevice));
     setIsAddModalOpen(false);
+    showNotification(`Device ${createdDevice.id} registered successfully.`);
   };
 
   // Edit Device Handler
   const handleEditDeviceSubmit = (updatedDeviceData) => {
-    const updated = devices.map((device) =>
-      device.id === updatedDeviceData.id ? updatedDeviceData : device
-    );
-    saveDevices(updated);
+    dispatch(updateDevice(updatedDeviceData));
     setEditingDevice(null);
+    showNotification(`Device ${updatedDeviceData.id} updated successfully.`);
   };
 
+  // Delete / Retire Device Handler
+  const handleDeleteOrRetire = (device) => {
+    const hasActiveRequests = serviceRequests.some(
+      (r) => r.deviceId === device.id && r.status !== "Resolved"
+    );
+
+    if (hasActiveRequests) {
+      if (
+        window.confirm(
+          `Device ${device.id} has active service requests pending resolution. Mark device as 'Retired' instead of permanently deleting?`
+        )
+      ) {
+        dispatch(retireDevice(device.id));
+        showNotification(`Device ${device.id} has been marked as Retired.`);
+      }
+    } else {
+      if (window.confirm(`Are you sure you want to remove device ${device.id}?`)) {
+        dispatch(deleteDevice(device.id));
+        showNotification(`Device ${device.id} deleted successfully.`);
+      }
+    }
+  };
 
   // Columns definition for DataTable component
   const columns = [
     { key: "idDisplay", label: "Device ID" },
     { key: "name", label: "Device Name" },
-    { key: "model", label: "Model" },
-    { key: "customer", label: "Customer" },
-    { key: "type", label: "Device Type" },
+    { key: "model", label: "Model / Specs" },
+    { key: "customer", label: "Assigned Customer" },
+    { key: "type", label: "Type" },
     { key: "statusBadge", label: "Status" },
     { key: "warrantyBadge", label: "Warranty" },
     { key: "actions", label: "Actions" },
   ];
 
-  // Map filtered devices to table row format compatible with DataTable
   const tableData = filteredDevices.map((device) => ({
     id: device.id,
-    idDisplay: <span className="device-id-cell">{device.id}</span>,
-    name: device.name,
-    model: device.model,
-    customer: device.customer,
+    idDisplay: <span className="font-mono font-bold text-blue-600 dark:text-blue-400">{device.id}</span>,
+    name: <strong className="text-slate-900 dark:text-white">{device.name}</strong>,
+    model: <span className="text-xs text-slate-500 dark:text-slate-400">{device.model}</span>,
+    customer: (
+      <span
+        className="text-blue-600 hover:text-blue-700 dark:text-blue-400 cursor-pointer font-medium"
+        onClick={() => navigate(`/customers/${device.customerId}`)}
+        title="View customer profile"
+      >
+        {getCustomerName(device.customerId)}
+      </span>
+    ),
     type: device.type,
     statusBadge: (
       <Badge variant={getStatusBadgeVariant(device.status)}>
@@ -143,54 +188,72 @@ function Devices() {
       </Badge>
     ),
     actions: (
-      <div className="action-buttons">
+      <div className="flex items-center gap-2">
         <button
           type="button"
-          className="btn-action-view"
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 dark:border-[#334155] bg-slate-50 dark:bg-[#111827] hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors cursor-pointer"
+          title="View Details"
           onClick={() => setViewingDevice(device)}
         >
-          View
+          <FiEye size={13} /> View
         </button>
         <button
           type="button"
-          className="btn-action-edit"
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-blue-200 dark:border-blue-800/50 bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 text-blue-600 dark:text-blue-400 transition-colors cursor-pointer"
+          title="Edit Device"
           onClick={() => setEditingDevice({ ...device })}
         >
-          Edit
+          <FiEdit2 size={13} /> Edit
+        </button>
+        <button
+          type="button"
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-rose-200 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+          title="Delete or Retire Device"
+          onClick={() => handleDeleteOrRetire(device)}
+        >
+          <FiTrash2 size={13} /> Remove
         </button>
       </div>
     ),
   }));
 
   return (
-    <div className="devices-page">
+    <div className="space-y-6">
       {/* Page Header */}
       <PageHeader
         title="Devices"
-        description="Manage and track customer hardware devices and warranty information."
+        description="Catalog, track hardware specifications, and manage customer device statuses."
         action={
           <Button onClick={() => setIsAddModalOpen(true)}>
-            + Add Device
+            <span className="inline-flex items-center gap-1.5">
+              <FiPlus size={16} /> Register Device
+            </span>
           </Button>
         }
       />
 
+      {notificationMsg && (
+        <div className="p-4 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 rounded-xl text-xs font-medium flex items-center gap-2">
+          <FiAlertCircle size={16} /> {notificationMsg}
+        </div>
+      )}
+
       {/* Search & Filters Toolbar */}
       <Card>
-        <div className="devices-toolbar">
-          <div className="devices-search-container">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          <div className="flex-1 min-w-0">
             <SearchInput
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by ID, name, model, customer..."
+              placeholder="Search by ID, device name, model, serial, or customer..."
             />
           </div>
 
-          <div className="devices-filters">
-            <div className="filter-group">
-              <span className="filter-label">Type:</span>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Type:</span>
               <select
-                className="filter-select"
+                className="px-3 py-2 rounded-xl border border-slate-300 dark:border-[#334155] bg-white dark:bg-[#111827] text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:border-blue-500"
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
               >
@@ -204,25 +267,24 @@ function Devices() {
               </select>
             </div>
 
-            <div className="filter-group">
-              <span className="filter-label">Status:</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Status:</span>
               <select
-                className="filter-select"
+                className="px-3 py-2 rounded-xl border border-slate-300 dark:border-[#334155] bg-white dark:bg-[#111827] text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:border-blue-500"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
                 <option value="All">All Statuses</option>
                 <option value="Active">Active</option>
-
                 <option value="Inactive">Inactive</option>
                 <option value="Retired">Retired</option>
               </select>
             </div>
 
-            <div className="filter-group">
-              <span className="filter-label">Warranty:</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Warranty:</span>
               <select
-                className="filter-select"
+                className="px-3 py-2 rounded-xl border border-slate-300 dark:border-[#334155] bg-white dark:bg-[#111827] text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:border-blue-500"
                 value={warrantyFilter}
                 onChange={(e) => setWarrantyFilter(e.target.value)}
               >
@@ -237,16 +299,12 @@ function Devices() {
       </Card>
 
       {/* Devices Data Table */}
-      <Card>
-        {tableData.length > 0 ? (
-          <DataTable columns={columns} data={tableData} />
-        ) : (
-          <div className="empty-state">
-            <h3>No devices found</h3>
-            <p>Try adjusting your search criteria or filter options.</p>
-          </div>
-        )}
-      </Card>
+      <DataTable
+        columns={columns}
+        data={tableData}
+        minWidth="min-w-[960px]"
+        emptyMessage="No devices found matching your criteria."
+      />
 
       {/* View Device Details Modal */}
       {viewingDevice && (
