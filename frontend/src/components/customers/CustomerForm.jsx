@@ -1,79 +1,81 @@
-import React from "react";
 import Button from "../common/Button/Button";
 
 function CustomerForm({ formData, errors, onChange, onSubmit, onCancel }) {
   return (
-    <form onSubmit={onSubmit} style={{ display: "grid", gap: "20px" }}>
-      <div style={{ display: "grid", gap: "5px" }}>
-        <label htmlFor="name" style={{ fontWeight: 500 }}>
-          Full Name
+    <form onSubmit={onSubmit} className="space-y-5">
+      <div>
+        <label htmlFor="name" className="field-label">
+          Full Name *
         </label>
         <input
           id="name"
           name="name"
+          maxLength={100}
           value={formData.name}
           onChange={onChange}
-          style={{ padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
+          className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-[#334155] bg-white dark:bg-[#111827] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
         />
         {errors.name && (
-          <span style={{ color: "red", fontSize: "0.85em" }}>{errors.name}</span>
+          <span className="text-xs text-rose-500 mt-1.5 block">{errors.name}</span>
         )}
       </div>
 
-      <div style={{ display: "grid", gap: "5px" }}>
-        <label htmlFor="email" style={{ fontWeight: 500 }}>
-          Email
+      <div>
+        <label htmlFor="email" className="field-label">
+          Email Address *
         </label>
         <input
           id="email"
           name="email"
+          maxLength={254}
           type="email"
           value={formData.email}
           onChange={onChange}
-          style={{ padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
+          className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-[#334155] bg-white dark:bg-[#111827] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
         />
         {errors.email && (
-          <span style={{ color: "red", fontSize: "0.85em" }}>{errors.email}</span>
+          <span className="text-xs text-rose-500 mt-1.5 block">{errors.email}</span>
         )}
       </div>
 
-      <div style={{ display: "grid", gap: "5px" }}>
-        <label htmlFor="phone" style={{ fontWeight: 500 }}>
-          Phone
+      <div>
+        <label htmlFor="phone" className="field-label">
+          Phone Number *
         </label>
         <input
           id="phone"
+          type="tel"
           name="phone"
+          maxLength={30}
           value={formData.phone}
           onChange={onChange}
-          style={{ padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
+          className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-[#334155] bg-white dark:bg-[#111827] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
         />
         {errors.phone && (
-          <span style={{ color: "red", fontSize: "0.85em" }}>{errors.phone}</span>
+          <span className="text-xs text-rose-500 mt-1.5 block">{errors.phone}</span>
         )}
       </div>
 
-      <div style={{ display: "grid", gap: "5px" }}>
-        <label htmlFor="address" style={{ fontWeight: 500 }}>
-          Address
+      <div>
+        <label htmlFor="address" className="field-label">
+          Address *
         </label>
         <input
           id="address"
           name="address"
+          maxLength={250}
           value={formData.address}
           onChange={onChange}
-          style={{ padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
+          className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-[#334155] bg-white dark:bg-[#111827] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
         />
         {errors.address && (
-          <span style={{ color: "red", fontSize: "0.85em" }}>
-            {errors.address}
-          </span>
+          <span className="text-xs text-rose-500 mt-1.5 block">{errors.address}</span>
         )}
       </div>
 
-      <div className="customer-grid-2">
-        <div style={{ display: "grid", gap: "5px" }}>
-          <label htmlFor="customerType" style={{ fontWeight: 500 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label htmlFor="customerType" className="field-label">
             Customer Type
           </label>
           <select
@@ -81,15 +83,15 @@ function CustomerForm({ formData, errors, onChange, onSubmit, onCancel }) {
             name="customerType"
             value={formData.customerType}
             onChange={onChange}
-            style={{ padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
+            className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-[#334155] bg-white dark:bg-[#111827] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors cursor-pointer"
           >
             <option value="Individual">Individual</option>
             <option value="Business">Business</option>
           </select>
         </div>
 
-        <div style={{ display: "grid", gap: "5px" }}>
-          <label htmlFor="status" style={{ fontWeight: 500 }}>
+        <div>
+          <label htmlFor="status" className="field-label">
             Status
           </label>
           <select
@@ -97,7 +99,7 @@ function CustomerForm({ formData, errors, onChange, onSubmit, onCancel }) {
             name="status"
             value={formData.status}
             onChange={onChange}
-            style={{ padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
+            className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-[#334155] bg-white dark:bg-[#111827] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors cursor-pointer"
           >
             <option value="Active">Active</option>
             <option value="Pending">Pending</option>
@@ -106,14 +108,7 @@ function CustomerForm({ formData, errors, onChange, onSubmit, onCancel }) {
         </div>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          gap: "10px",
-          justifyContent: "flex-end",
-          marginTop: "10px",
-        }}
-      >
+      <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-[#334155]">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>

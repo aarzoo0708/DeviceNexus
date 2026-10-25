@@ -1,100 +1,136 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { FiX } from "react-icons/fi";
 import Button from "../common/Button/Button";
 
 function EditDeviceModal({ device, onClose, onSubmit }) {
-  const [editingDevice, setEditingDevice] = useState(device);
+  const customers = useSelector((state) => state.customers || []);
+
+  const [formData, setFormData] = useState({
+    id: device.id,
+    name: device.name || "",
+    model: device.model || "",
+    customerId: device.customerId || (customers[0]?.id || ""),
+    type: device.type || "Laptop",
+    status: device.status || "Active",
+    warranty: device.warranty || "Active",
+    serialNumber: device.serialNumber || "",
+    purchaseDate: device.purchaseDate || "",
+  });
+
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    setEditingDevice(device);
-  }, [device]);
-
-  if (!editingDevice) return null;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = {};
-    if (!editingDevice.name.trim()) newErrors.name = "Device name is required.";
-    if (!editingDevice.customer.trim()) newErrors.customer = "Customer name is required.";
+
+    if (!formData.name.trim()) newErrors.name = "Device name is required.";
+    if (!formData.customerId) newErrors.customerId = "Customer is required.";
+
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
-    onSubmit({ ...editingDevice, name: editingDevice.name.trim(), customer: editingDevice.customer.trim() });
+
+    onSubmit({
+      ...formData,
+      name: formData.name.trim(),
+      model: formData.model.trim() || "Standard Model",
+    });
   };
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
-        <form onSubmit={handleSubmit}>
-          <div className="modal-header">
-            <h3>Edit Device — {editingDevice.id}</h3>
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="modal-backdrop"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-lg max-h-[90dvh] bg-white dark:bg-[#1e293b] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#334155] flex flex-col overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className="shrink-0 px-6 py-4 border-b border-slate-100 dark:border-[#334155] flex items-center justify-between">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              Edit Device — {device.id}
+            </h3>
             <button
               type="button"
-              className="modal-close-btn"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg transition-colors cursor-pointer"
               onClick={onClose}
+              aria-label="Close"
             >
-              &times;
+              <FiX size={18} />
             </button>
           </div>
 
-          <div className="modal-body">
-            <div className="form-group">
-              <label>Device Name *</label>
+          <div className="p-6 min-h-0 overflow-y-auto space-y-5">
+            <div>
+              <label className="field-label">
+                Assign to Customer *
+              </label>
+              <select
+                name="customerId"
+                className="form-control cursor-pointer"
+                value={formData.customerId}
+                onChange={handleChange}
+                required
+              >
+                {customers.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name} ({c.id})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="field-label">
+                Device Name / Make *
+              </label>
               <input
                 type="text"
+                name="name"
                 className="form-control"
                 required
-                value={editingDevice.name}
-                onChange={(e) =>
-                  setEditingDevice({ ...editingDevice, name: e.target.value })
-                }
+                value={formData.name}
+                onChange={handleChange}
               />
-              {errors.name && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.name}</small>}
+              {errors.name && (
+                <small className="text-xs text-rose-500 mt-1 block">{errors.name}</small>
+              )}
             </div>
 
-            <div className="form-group">
-              <label>Customer *</label>
+            <div>
+              <label className="field-label">
+                Model & Specifications
+              </label>
               <input
                 type="text"
+                name="model"
                 className="form-control"
-                required
-                value={editingDevice.customer}
-                onChange={(e) =>
-                  setEditingDevice({
-                    ...editingDevice,
-                    customer: e.target.value,
-                  })
-                }
-              />
-              {errors.customer && <small style={{ color: "red", fontSize: "12px", display: "block", marginTop: "4px" }}>{errors.customer}</small>}
-            </div>
-
-            <div className="form-group">
-              <label>Model Description</label>
-              <input
-                type="text"
-                className="form-control"
-                value={editingDevice.model}
-                onChange={(e) =>
-                  setEditingDevice({
-                    ...editingDevice,
-                    model: e.target.value,
-                  })
-                }
+                value={formData.model}
+                onChange={handleChange}
               />
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label>Device Type</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label className="field-label">
+                  Device Type
+                </label>
                 <select
-                  className="form-control"
-                  value={editingDevice.type}
-                  onChange={(e) =>
-                    setEditingDevice({
-                      ...editingDevice,
-                      type: e.target.value,
-                    })
-                  }
+                  name="type"
+                  className="form-control cursor-pointer"
+                  value={formData.type}
+                  onChange={handleChange}
                 >
                   <option value="Laptop">Laptop</option>
                   <option value="Smartphone">Smartphone</option>
@@ -105,17 +141,15 @@ function EditDeviceModal({ device, onClose, onSubmit }) {
                 </select>
               </div>
 
-              <div className="form-group">
-                <label>Status</label>
+              <div>
+                <label className="field-label">
+                  Hardware Status
+                </label>
                 <select
-                  className="form-control"
-                  value={editingDevice.status}
-                  onChange={(e) =>
-                    setEditingDevice({
-                      ...editingDevice,
-                      status: e.target.value,
-                    })
-                  }
+                  name="status"
+                  className="form-control cursor-pointer"
+                  value={formData.status}
+                  onChange={handleChange}
                 >
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
@@ -124,18 +158,16 @@ function EditDeviceModal({ device, onClose, onSubmit }) {
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label>Warranty Status</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label className="field-label">
+                  Warranty Status
+                </label>
                 <select
-                  className="form-control"
-                  value={editingDevice.warranty}
-                  onChange={(e) =>
-                    setEditingDevice({
-                      ...editingDevice,
-                      warranty: e.target.value,
-                    })
-                  }
+                  name="warranty"
+                  className="form-control cursor-pointer"
+                  value={formData.warranty}
+                  onChange={handleChange}
                 >
                   <option value="Active">Active</option>
                   <option value="Expiring Soon">Expiring Soon</option>
@@ -143,24 +175,22 @@ function EditDeviceModal({ device, onClose, onSubmit }) {
                 </select>
               </div>
 
-              <div className="form-group">
-                <label>Serial Number</label>
+              <div>
+                <label className="field-label">
+                  Serial Number
+                </label>
                 <input
                   type="text"
+                  name="serialNumber"
                   className="form-control"
-                  value={editingDevice.serialNumber}
-                  onChange={(e) =>
-                    setEditingDevice({
-                      ...editingDevice,
-                      serialNumber: e.target.value,
-                    })
-                  }
+                  value={formData.serialNumber}
+                  onChange={handleChange}
                 />
               </div>
             </div>
           </div>
 
-          <div className="modal-footer">
+          <div className="shrink-0 px-6 py-4 bg-slate-50 dark:bg-[#111827] border-t border-slate-100 dark:border-[#334155] flex flex-wrap items-center justify-end gap-3">
             <Button variant="secondary" onClick={onClose}>
               Cancel
             </Button>

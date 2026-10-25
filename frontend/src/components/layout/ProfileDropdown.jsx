@@ -1,55 +1,68 @@
-import React from "react";
 import { useNavigate } from "react-router";
+import { FiUserCheck, FiUser, FiSettings, FiLogOut } from "react-icons/fi";
+import styles from "./Navbar.module.css";
 
 function ProfileDropdown({ user, onClose, onOpenLogin, onSignOut }) {
   const navigate = useNavigate();
 
   return (
-    <div className="profile-dropdown">
-      <div className="dropdown-header">
-        <span className="dropdown-name">{user?.name || "Admin"}</span>
-        <span className="dropdown-role">{user?.role || "Service Manager"}</span>
+    <div className={styles.profileDropdown}>
+      <div className={styles.dropdownHeader}>
+        <span className={styles.dropdownName}>{user?.name || "Admin"}</span>
+        <span className={styles.dropdownRole}>{user?.role || "Service Manager"}</span>
       </div>
-      <div className="dropdown-divider"></div>
+      <div className={styles.dropdownDivider} />
 
       <button
-        className="dropdown-item"
+        className={styles.dropdownItem}
         type="button"
         onClick={onOpenLogin}
       >
-        <span className="dropdown-icon">🔑</span> Switch User / Sign In
+        <span className={styles.dropdownIcon}>
+          <FiUserCheck />
+        </span>
+        Switch Demo User
       </button>
 
       <button
-        className="dropdown-item"
+        className={styles.dropdownItem}
         type="button"
         onClick={() => {
           navigate("/profile");
           onClose();
         }}
       >
-        <span className="dropdown-icon">👤</span> My Profile
+        <span className={styles.dropdownIcon}>
+          <FiUser />
+        </span>
+        My Profile
       </button>
 
       <button
-        className="dropdown-item"
+        className={styles.dropdownItem}
         type="button"
         onClick={() => {
           navigate("/settings");
           onClose();
         }}
       >
-        <span className="dropdown-icon">⚙</span> Account Settings
+        <span className={styles.dropdownIcon}>
+          <FiSettings />
+        </span>
+        Workspace Settings
       </button>
 
-      <div className="dropdown-divider"></div>
+      <div className={styles.dropdownDivider} />
 
       <button
-        className="dropdown-item text-danger"
+        className={`${styles.dropdownItem} ${styles.textDanger}`}
         type="button"
         onClick={onSignOut}
       >
-        <span className="dropdown-icon">🚪</span> Sign Out
+        <span className={styles.dropdownIcon}>
+          <FiLogOut />
+        </span>
+        Sign Out (Guest Mode)
       </button>
     </div>
   );

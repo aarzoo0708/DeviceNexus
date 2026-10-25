@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Outlet } from "react-router";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
-import "./AppLayout.css";
+import styles from "./AppLayout.module.css";
 
 function AppLayout() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -12,11 +12,15 @@ function AppLayout() {
   };
 
   return (
-    <div className={`app-layout ${isSidebarCollapsed ? "sidebar-collapsed" : ""}`}>
+    <div
+      className={`${styles.appLayout} ${
+        isSidebarCollapsed ? styles.sidebarCollapsed : ""
+      }`}
+    >
       <Sidebar isCollapsed={isSidebarCollapsed} />
-      <div className="main-area">
+      <div className={styles.mainArea}>
         <Navbar onToggleSidebar={toggleSidebar} />
-        <main className="page-content">
+        <main className={styles.pageContent}>
           <Outlet />
         </main>
       </div>

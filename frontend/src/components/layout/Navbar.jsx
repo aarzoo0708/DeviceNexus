@@ -1,22 +1,17 @@
 import { useState, useEffect, useRef } from "react";
-import "./Navbar.css";
 import { useLocation, useNavigate } from "react-router";
+import { useSelector } from "react-redux";
+import { FiMenu, FiSearch, FiBell, FiChevronDown, FiX } from "react-icons/fi";
 import { useAuth } from "../../contexts/AuthContext";
 import LoginModal from "../common/LoginModal/LoginModal";
 import NotificationDropdown from "./NotificationDropdown";
 import ProfileDropdown from "./ProfileDropdown";
-import {
-  getCustomers,
-  getDevices,
-  getServiceRequests,
-  getWarranties,
-  getInteractions,
-  getFollowUps,
-} from "../../data/mockData";
+import styles from "./Navbar.module.css";
 
 const pageTitles = {
   "/": "Dashboard",
   "/customers": "Customers",
+  "/customers/add": "Add Customer",
   "/devices": "Devices",
   "/service-requests": "Service Requests",
   "/warranty": "Warranty",
@@ -67,12 +62,20 @@ function Navbar({ onToggleSidebar }) {
 
   const { user, logout } = useAuth();
 
+  // Read data from Redux store for global omnisearch
+  const customers = useSelector((state) => state.customers);
+  const devices = useSelector((state) => state.devices);
+  const serviceRequests = useSelector((state) => state.serviceRequests);
+  const warranties = useSelector((state) => state.warranties);
+  const interactions = useSelector((state) => state.interactions);
+  const followUps = useSelector((state) => state.followUps);
+
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [searchQuery, setSearchQuery] = useState("");
-const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const dropdownRef = useRef(null);
   const notificationRef = useRef(null);
@@ -99,7 +102,12 @@ const [isSearchOpen, setIsSearchOpen] = useState(false);
     };
   }, [isProfileOpen, isNotificationOpen]);
 
-  const currentPage = pageTitles[location.pathname] || "Dashboard";
+  const currentPage =
+    pageTitles[location.pathname] ||
+    (location.pathname.startsWith("/customers/")
+      ? "Customer Details"
+      : "Dashboard");
+
   const unreadCount = notifications.filter((n) => n.unread).length;
 
   const handleToggleNotifications = () => {
@@ -127,7 +135,7 @@ const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const handleNotificationClick = (id) => {
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, unread: false } : n)),
+      prev.map((n) => (n.id === id ? { ...n, unread: false } : n))
     );
   };
 
@@ -143,229 +151,190 @@ const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const query = searchQuery.trim().toLowerCase();
 
-const searchResults = query
-  ? [
-      ...getCustomers()
-        .filter((customer) =>
-          [customer.id, customer.name, customer.email, customer.phone]
-            .join(" ")
-            .toLowerCase()
-            .includes(query)
-        )
-        .map((customer) => ({
-          id: customer.id,
-          type: "Customer",
-          title: customer.name,
-          detail: customer.email,
-          path: `/customers/${customer.id}`,
-        })),
+  // Search across Redux business entities
+  const searchResults = query
+    ? [
+        ...customers
+          .filter((c) =>
+            [c.id, c.name, c.email, c.phone].join(" ").toLowerCase().includes(query)
+          )
+          .map((c) => ({
+            id: c.id,
+            type: "Customer",
+            title: c.name,
+            detail: `${c.id} · ${c.email}`,
+            path: `/customers/${c.id}`,
+          })),
 
-      ...getDevices()
-        .filter((device) =>
-          [
-            device.id,
-            device.name,
-            device.model,
-            device.customer,
-            device.serialNumber,
-          ]
-            .join(" ")
-            .toLowerCase()
-            .includes(query)
-        )
-        .map((device) => ({
-          id: device.id,
-          type: "Device",
-          title: device.name,
-          detail: device.id,
-          path: "/devices",
-        })),
+        ...devices
+          .filter((d) =>
+            [d.id, d.name, d.model, d.serialNumber].join(" ").toLowerCase().includes(query)
+          )
+          .map((d) => ({
+            id: d.id,
+            type: "Device",
+            title: d.name,
+            detail: `${d.id} · ${d.model}`,
+            path: "/devices",
+          })),
 
-      ...getServiceRequests()
-        .filter((request) =>
-          [
-            request.id,
-            request.customerName,
-            request.deviceName,
-            request.issue,
-            request.status,
-          ]
-            .join(" ")
-            .toLowerCase()
-            .includes(query)
-        )
-        .map((request) => ({
-          id: request.id,
-          type: "Service Request",
-          title: request.id,
-          detail: `${request.customerName} · ${request.issue}`,
-          path: "/service-requests",
-        })),
+        ...serviceRequests
+          .filter((r) =>
+            [r.id, r.issue, r.status, r.customerName || ""]
+              .join(" ")
+              .toLowerCase()
+              .includes(query)
+          )
+          .map((r) => ({
+            id: r.id,
+            type: "Service Request",
+            title: r.id,
+            detail: `${r.issue} (${r.status})`,
+            path: "/service-requests",
+          })),
 
-      ...getWarranties()
-        .filter((warranty) =>
-          [
-            warranty.id,
-            warranty.deviceName,
-            warranty.customerName,
-            warranty.serialNumber,
-            warranty.provider,
-            warranty.status,
-          ]
-            .join(" ")
-            .toLowerCase()
-            .includes(query)
-        )
-        .map((warranty) => ({
-          id: warranty.id,
-          type: "Warranty",
-          title: warranty.deviceName,
-          detail: warranty.id,
-          path: "/warranty",
-        })),
+        ...warranties
+          .filter((w) =>
+            [w.id, w.warrantyType, w.provider, w.serialNumber]
+              .join(" ")
+              .toLowerCase()
+              .includes(query)
+          )
+          .map((w) => ({
+            id: w.id,
+            type: "Warranty",
+            title: w.id,
+            detail: `${w.warrantyType} · ${w.provider}`,
+            path: "/warranty",
+          })),
 
-      ...getInteractions()
-        .filter((interaction) =>
-          [
-            interaction.id,
-            interaction.customerName,
-            interaction.subject,
-            interaction.notes,
-            interaction.staff,
-          ]
-            .join(" ")
-            .toLowerCase()
-            .includes(query)
-        )
-        .map((interaction) => ({
-          id: interaction.id,
-          type: "Interaction",
-          title: interaction.subject,
-          detail: interaction.customerName,
-          path: "/interactions",
-        })),
+        ...interactions
+          .filter((i) =>
+            [i.id, i.subject, i.notes, i.staff].join(" ").toLowerCase().includes(query)
+          )
+          .map((i) => ({
+            id: i.id,
+            type: "Interaction",
+            title: i.subject,
+            detail: `${i.channel} · ${i.staff}`,
+            path: "/interactions",
+          })),
 
-      ...getFollowUps()
-        .filter((followUp) =>
-          [
-            followUp.id,
-            followUp.customerName,
-            followUp.subject,
-            followUp.notes,
-            followUp.assignedStaff,
-            followUp.relatedId,
-          ]
-            .join(" ")
-            .toLowerCase()
-            .includes(query)
-        )
-        .map((followUp) => ({
-          id: followUp.id,
-          type: "Follow-up",
-          title: followUp.subject,
-          detail: `${followUp.customerName} · ${followUp.dueDate} (${followUp.status})`,
-          path: "/follow-ups",
-        })),
-    ].slice(0, 8)
-  : [];
+        ...followUps
+          .filter((f) =>
+            [f.id, f.subject, f.notes, f.assignedStaff]
+              .join(" ")
+              .toLowerCase()
+              .includes(query)
+          )
+          .map((f) => ({
+            id: f.id,
+            type: "Follow-up",
+            title: f.subject,
+            detail: `Due: ${f.dueDate} (${f.status})`,
+            path: "/follow-ups",
+          })),
+      ].slice(0, 8)
+    : [];
 
   const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "A";
 
   return (
-    <header className="navbar">
-      {/* LEFT */}
-      <div className="navbar-left">
+    <header className={styles.navbar}>
+      {/* LEFT: Mobile toggle & title */}
+      <div className={styles.navbarLeft}>
         <button
-          className="menu-button"
+          className={styles.menuButton}
           type="button"
           aria-label="Toggle sidebar"
-          aria-expanded={true}
           onClick={onToggleSidebar}
         >
-          ☰
+          <FiMenu size={20} />
         </button>
 
-        <div className="page-title">
-          <span className="breadcrumb">Workspace</span>
+        <div className={styles.pageTitle}>
+          <span className={styles.breadcrumb}>Workspace</span>
           <h2>{currentPage}</h2>
         </div>
       </div>
 
-      <div className="navbar-search">
-  <div className="navbar-search-input">
-    <span aria-hidden="true">⌕</span>
-    <input
-      type="text"
-      value={searchQuery}
-      placeholder="Search customers, devices, requests..."
-      aria-label="Search all records"
-      aria-expanded={isSearchOpen}
-      onFocus={() => setIsSearchOpen(true)}
-      onChange={(event) => {
-        setSearchQuery(event.target.value);
-        setIsSearchOpen(true);
-      }}
-      onKeyDown={(event) => {
-        if (event.key === "Escape") {
-          setSearchQuery("");
-          setIsSearchOpen(false);
-        }
-      }}
-    />
-    {searchQuery && (
-      <button
-        type="button"
-        aria-label="Clear search"
-        onClick={() => {
-          setSearchQuery("");
-          setIsSearchOpen(false);
-        }}
-      >
-        ×
-      </button>
-    )}
-  </div>
-
-  {isSearchOpen && searchQuery.trim() && (
-    <div className="navbar-search-results">
-      {searchResults.length > 0 ? (
-        searchResults.map((result) => (
-          <button
-            type="button"
-            className="navbar-search-result"
-            key={`${result.type}-${result.id}`}
-            onClick={() => {
-              navigate(result.path);
-              setSearchQuery("");
-              setIsSearchOpen(false);
+      {/* CENTER: Omnisearch */}
+      <div className={styles.navbarSearch}>
+        <div className={styles.navbarSearchInput}>
+          <span aria-hidden="true">
+            <FiSearch />
+          </span>
+          <input
+            type="text"
+            value={searchQuery}
+            placeholder="Search customers, devices, requests..."
+            aria-label="Search all records"
+            onFocus={() => setIsSearchOpen(true)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setIsSearchOpen(true);
             }}
-          >
-            <span className="navbar-search-result-type">{result.type}</span>
-            <strong>{result.title}</strong>
-            <small>{result.detail}</small>
-          </button>
-        ))
-      ) : (
-        <p className="navbar-search-empty">No matching records found.</p>
-      )}
-    </div>
-  )}
-</div>
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                setSearchQuery("");
+                setIsSearchOpen(false);
+              }
+            }}
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              aria-label="Clear search"
+              onClick={() => {
+                setSearchQuery("");
+                setIsSearchOpen(false);
+              }}
+            >
+              <FiX />
+            </button>
+          )}
+        </div>
 
-      {/* RIGHT */}
-      <div className="navbar-right">
-        {/* NOTIFICATION MENU */}
-        <div className="notification-menu-container" ref={notificationRef}>
+        {isSearchOpen && searchQuery.trim() && (
+          <div className={styles.navbarSearchResults}>
+            {searchResults.length > 0 ? (
+              searchResults.map((result) => (
+                <button
+                  type="button"
+                  className={styles.navbarSearchResult}
+                  key={`${result.type}-${result.id}`}
+                  onClick={() => {
+                    navigate(result.path);
+                    setSearchQuery("");
+                    setIsSearchOpen(false);
+                  }}
+                >
+                  <span className={styles.navbarSearchResultType}>{result.type}</span>
+                  <strong>{result.title}</strong>
+                  <small>{result.detail}</small>
+                </button>
+              ))
+            ) : (
+              <p className={styles.navbarSearchEmpty}>No matching records found.</p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* RIGHT: Notifications & User profile */}
+      <div className={styles.navbarRight}>
+        {/* Notification Icon */}
+        <div className={styles.notificationMenuContainer} ref={notificationRef}>
           <button
-            className={`icon-button ${isNotificationOpen ? "active" : ""}`}
+            className={`${styles.iconButton} ${
+              isNotificationOpen ? styles.active : ""
+            }`}
             type="button"
             aria-label="Notifications"
-            aria-expanded={isNotificationOpen}
-            aria-haspopup="true"
             onClick={handleToggleNotifications}
           >
-            🔔
-            {unreadCount > 0 && <span className="notification-dot"></span>}
+            <FiBell size={18} />
+            {unreadCount > 0 && <span className={styles.notificationDot} />}
           </button>
 
           {isNotificationOpen && (
@@ -380,25 +349,23 @@ const searchResults = query
           )}
         </div>
 
-        {/* PROFILE MENU */}
-        <div className="profile-menu-container" ref={dropdownRef}>
+        {/* Profile Dropdown */}
+        <div className={styles.profileMenuContainer} ref={dropdownRef}>
           <button
-            className="user-profile"
+            className={styles.userProfile}
             type="button"
             onClick={handleToggleProfile}
-            aria-expanded={isProfileOpen}
-            aria-haspopup="true"
           >
-            <div className="user-avatar">{userInitial}</div>
-
-            <div className="user-info">
-              <span className="user-name">{user?.name || "Admin"}</span>
-              <span className="user-role">
+            <div className={styles.userAvatar}>{userInitial}</div>
+            <div className={styles.userInfo}>
+              <span className={styles.userName}>{user?.name || "Admin"}</span>
+              <span className={styles.userRole}>
                 {user?.role || "Service Manager"}
               </span>
             </div>
-
-            <span className="user-arrow">▾</span>
+            <span className={styles.userArrow}>
+              <FiChevronDown size={14} />
+            </span>
           </button>
 
           {isProfileOpen && (
@@ -412,7 +379,7 @@ const searchResults = query
         </div>
       </div>
 
-      {/* Login / Sign In Modal */}
+      {/* Demo User Switch Modal */}
       <LoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}

@@ -1,6 +1,15 @@
 import { NavLink } from "react-router";
-
-import "./Sidebar.css";
+import {
+  FiHome,
+  FiUsers,
+  FiCpu,
+  FiZap,
+  FiShield,
+  FiMessageSquare,
+  FiClock,
+  FiSettings,
+} from "react-icons/fi";
+import styles from "./Sidebar.module.css";
 
 const menuSections = [
   {
@@ -8,56 +17,52 @@ const menuSections = [
     items: [
       {
         label: "Overview",
-        icon: "⌂",
+        icon: <FiHome />,
         path: "/",
       },
     ],
   },
-
   {
     title: "CUSTOMER MANAGEMENT",
     items: [
       {
         label: "Customers",
-        icon: "♙",
+        icon: <FiUsers />,
         path: "/customers",
       },
       {
         label: "Devices",
-        icon: "▣",
+        icon: <FiCpu />,
         path: "/devices",
       },
     ],
   },
-
   {
     title: "SERVICE OPERATIONS",
     items: [
       {
         label: "Service Requests",
-        icon: "⚡",
+        icon: <FiZap />,
         path: "/service-requests",
       },
-
       {
         label: "Warranty",
-        icon: "◷",
+        icon: <FiShield />,
         path: "/warranty",
       },
     ],
   },
-
   {
     title: "RELATIONSHIP",
     items: [
       {
         label: "Interactions",
-        icon: "💬",
+        icon: <FiMessageSquare />,
         path: "/interactions",
       },
       {
         label: "Follow-ups",
-        icon: "⏰",
+        icon: <FiClock />,
         path: "/follow-ups",
       },
     ],
@@ -66,94 +71,57 @@ const menuSections = [
 
 function Sidebar({ isCollapsed }) {
   return (
-    <aside className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
-
+    <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ""}`}>
       {/* BRAND */}
-
-      <div className="sidebar-brand">
-        <div className="brand-mark">
-          D
-        </div>
-
-        <div>
-          <h2>DeviceNexus</h2>
-          <span>CRM PLATFORM</span>
+      <div className={styles.sidebarBrand}>
+        <div className={styles.brandMark}>D</div>
+        <div className={styles.brandDetails}>
+          <h2 className={styles.brandTitle}>DeviceNexus</h2>
+          <span className={styles.brandSub}>CRM PLATFORM</span>
         </div>
       </div>
 
-
       {/* NAVIGATION */}
-
-      <nav className="sidebar-navigation">
-
+      <nav className={styles.sidebarNavigation}>
         {menuSections.map((section) => (
-
-          <div
-            className="menu-section"
-            key={section.title}
-          >
-
-            <p className="menu-section-title">
-              {section.title}
-            </p>
+          <div className={styles.menuSection} key={section.title}>
+            <p className={styles.menuSectionTitle}>{section.title}</p>
 
             {section.items.map((item) => (
-
               <NavLink
                 key={item.label}
                 to={item.path}
                 end={item.path === "/"}
                 title={isCollapsed ? item.label : undefined}
                 className={({ isActive }) =>
-                  `menu-item ${isActive ? "active" : ""}`
+                  `${styles.menuItem} ${isActive ? styles.active : ""}`
                 }
               >
-
-                <span className="menu-icon">
-                  {item.icon}
-                </span>
-
-                <span className="menu-label">
-                  {item.label}
-                </span>
-
+                <span className={styles.menuIcon}>{item.icon}</span>
+                <span className={styles.menuLabel}>{item.label}</span>
               </NavLink>
-
             ))}
-
           </div>
-
         ))}
-
       </nav>
 
-
       {/* BOTTOM */}
-
-      <div className="sidebar-bottom">
-
+      <div className={styles.sidebarBottom}>
         <NavLink
           to="/settings"
           title={isCollapsed ? "Settings" : undefined}
           className={({ isActive }) =>
-            `menu-item ${isActive ? "active" : ""}`
+            `${styles.menuItem} ${isActive ? styles.active : ""}`
           }
         >
-          <span className="menu-icon">
-            ⚙
+          <span className={styles.menuIcon}>
+            <FiSettings />
           </span>
-
-          <span className="menu-label">
-            Settings
-          </span>
+          <span className={styles.menuLabel}>Settings</span>
         </NavLink>
 
-        <div className="sidebar-version">
-          DeviceNexus v1.0
-        </div>
-
+        <div className={styles.sidebarVersion}>DeviceNexus v1.0</div>
       </div>
-
     </aside>
   );
 }

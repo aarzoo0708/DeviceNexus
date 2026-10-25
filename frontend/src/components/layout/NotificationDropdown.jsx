@@ -1,4 +1,5 @@
-import React from "react";
+import { FiUsers, FiCpu, FiAlertTriangle, FiTool, FiBell, FiX } from "react-icons/fi";
+import styles from "./Navbar.module.css";
 
 function NotificationDropdown({
   notifications,
@@ -9,20 +10,20 @@ function NotificationDropdown({
   onDismissNotification,
 }) {
   return (
-    <div className="notification-dropdown">
-      <div className="notification-header">
-        <div className="notification-title-area">
+    <div className={styles.notificationDropdown}>
+      <div className={styles.notificationHeader}>
+        <div className={styles.notificationTitleArea}>
           <h3>Notifications</h3>
           {unreadCount > 0 && (
-            <span className="unread-count-pill">{unreadCount} new</span>
+            <span className={styles.unreadCountPill}>{unreadCount} new</span>
           )}
         </div>
 
-        <div className="notification-header-actions">
+        <div className={styles.notificationHeaderActions}>
           {unreadCount > 0 && (
             <button
               type="button"
-              className="notif-action-btn"
+              className={styles.notifActionBtn}
               onClick={onMarkAllAsRead}
             >
               Mark read
@@ -31,7 +32,7 @@ function NotificationDropdown({
           {notifications.length > 0 && (
             <button
               type="button"
-              className="notif-action-btn danger"
+              className={`${styles.notifActionBtn} ${styles.danger}`}
               onClick={onClearAll}
             >
               Clear all
@@ -40,44 +41,48 @@ function NotificationDropdown({
         </div>
       </div>
 
-      <div className="notification-list">
+      <div className={styles.notificationList}>
         {notifications.length > 0 ? (
           notifications.map((item) => (
             <div
               key={item.id}
-              className={`notification-item ${item.unread ? "unread" : ""}`}
+              className={`${styles.notificationItem} ${
+                item.unread ? styles.unread : ""
+              }`}
               onClick={() => onNotificationClick(item.id)}
             >
-              <div className={`notification-icon-badge ${item.type}`}>
-                {item.type === "customer" && "👥"}
-                {item.type === "device" && "💻"}
-                {item.type === "warranty" && "⚠️"}
-                {item.type === "request" && "⚡"}
+              <div className={styles.notificationIconBadge}>
+                {item.type === "customer" && <FiUsers />}
+                {item.type === "device" && <FiCpu />}
+                {item.type === "warranty" && <FiAlertTriangle />}
+                {item.type === "request" && <FiTool />}
               </div>
 
-              <div className="notification-body">
-                <div className="notification-item-header">
-                  <span className="notification-item-title">{item.title}</span>
-                  <span className="notification-item-time">{item.time}</span>
+              <div className={styles.notificationBody}>
+                <div className={styles.notificationItemHeader}>
+                  <span className={styles.notificationItemTitle}>{item.title}</span>
+                  <span className={styles.notificationItemTime}>{item.time}</span>
                 </div>
-                <p className="notification-item-message">{item.message}</p>
+                <p className={styles.notificationItemMessage}>{item.message}</p>
               </div>
 
               <button
                 type="button"
-                className="notif-dismiss-btn"
+                className={styles.notifDismissBtn}
                 aria-label="Dismiss notification"
                 onClick={(e) => onDismissNotification(item.id, e)}
               >
-                &times;
+                <FiX size={14} />
               </button>
             </div>
           ))
         ) : (
-          <div className="notification-empty-state">
-            <span className="empty-bell-icon">🔔</span>
-            <p className="empty-title">No notifications</p>
-            <p className="empty-desc">
+          <div className={styles.notificationEmptyState}>
+            <span className={styles.emptyBellIcon}>
+              <FiBell size={24} />
+            </span>
+            <p className={styles.emptyTitle}>No notifications</p>
+            <p className={styles.emptyDesc}>
               You're all caught up! Check back later for updates.
             </p>
           </div>

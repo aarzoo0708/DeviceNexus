@@ -1,0 +1,232 @@
+/* Sidebar.module.css - Refined DeviceNexus Sidebar with full theme support */
+.sidebar {
+  width: var(--sidebar-width, 245px);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--sidebar);
+  color: var(--text-secondary);
+  border-right: 1px solid var(--border);
+  z-index: 1000;
+  overflow: hidden;
+  transition: width var(--transition);
+}
+
+.collapsed {
+  width: var(--sidebar-collapsed-width, 68px);
+}
+
+.collapsed .sidebarBrand {
+  justify-content: center;
+  padding: 14px 8px;
+}
+
+.collapsed .brandDetails {
+  display: none;
+}
+
+.collapsed .menuSectionTitle {
+  display: none;
+}
+
+.collapsed .menuItem {
+  justify-content: center;
+  padding: 9px 8px;
+}
+
+.collapsed .menuLabel {
+  display: none;
+}
+
+.collapsed .menuIcon {
+  margin: 0;
+}
+
+.collapsed .sidebarVersion {
+  display: none;
+}
+
+.sidebarBrand {
+  height: var(--navbar-height, 64px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.brandMark {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.brandTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.brandSub {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.sidebarNavigation {
+  flex: 1;
+  padding: 16px 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.menuSection {
+  margin-bottom: 18px;
+}
+
+.menuSectionTitle {
+  margin: 0 12px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.menuItem {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  margin-bottom: 3px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.menuItem:hover {
+  background: var(--sidebar-hover);
+  color: var(--text-primary);
+}
+
+.active {
+  background: var(--primary);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+.active:hover {
+  background: var(--primary-hover);
+  color: #ffffff;
+}
+
+.menuIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.menuItem:hover .menuIcon {
+  color: var(--text-primary);
+}
+
+.active .menuIcon,
+.active:hover .menuIcon {
+  color: #ffffff;
+}
+
+.menuLabel {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebarBottom {
+  padding: 10px;
+  border-top: 1px solid var(--border);
+  background: var(--sidebar);
+  flex-shrink: 0;
+}
+
+.sidebarBottom .menuItem {
+  margin-bottom: 4px;
+}
+
+.sidebarVersion {
+  padding: 4px 10px;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 230px;
+  }
+}
+
+@media (max-width: 700px) {
+  .sidebar {
+    width: 64px;
+  }
+
+  .sidebarBrand {
+    justify-content: center;
+    padding: 14px 6px;
+  }
+
+  .brandDetails {
+    display: none;
+  }
+
+  .menuSectionTitle {
+    display: none;
+  }
+
+  .menuItem {
+    justify-content: center;
+    padding: 8px;
+  }
+
+  .menuLabel {
+    display: none;
+  }
+
+  .sidebarVersion {
+    display: none;
+  }
+}
+
+
