@@ -1,38 +1,63 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext();
 
 export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('system');
+  // Load saved theme from localStorage, default to 'dark' for first-time visitors
+  const [theme, setTheme] = useState(() => {
+    try {
+      const saved = localStorage.getItem("devicenexus_theme");
+      return saved ? saved : "dark";
+    } catch {
+      return "dark";
+    }
+  });
 
   useEffect(() => {
     const root = document.documentElement;
 
     const applyTheme = (themeName) => {
-      if (themeName === 'system') {
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        root.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+      let resolvedTheme = themeName;
+      if (themeName === "system") {
+        const systemPrefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        resolvedTheme = systemPrefersDark ? "dark" : "light";
+      }
+
+      root.setAttribute("data-theme", resolvedTheme);
+      if (resolvedTheme === "dark") {
+        root.classList.add("dark");
       } else {
-        root.setAttribute('data-theme', themeName);
+        root.classList.remove("dark");
       }
     };
 
     applyTheme(theme);
 
-    if (theme === 'system') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handleChange = (e) => {
-        root.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-      };
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
+    try {
+      localStorage.setItem("devicenexus_theme", theme);
+    } catch (err) {
+      console.warn("Could not save theme to localStorage:", err);
+    }
+
+    // If set to system, listen for system theme changes
+    if (theme === "system") {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const handleChange = () => applyTheme("system");
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
     }
   }, [theme]);
 
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
