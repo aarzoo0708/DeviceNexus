@@ -21,53 +21,19 @@ const router = createBrowserRouter([
     path: "/",
     Component: AppLayout,
 
+    // Every page below shares the sidebar and navbar from AppLayout.
     children: [
-      {
-        index: true,
-        Component: Dashboard,
-      },
-      {
-        path: "customers",
-        Component: Customers,
-      },
-      {
-        path: "customers/add",
-        Component: AddCustomer,
-      },
-      {
-        path: "customers/:id",
-        Component: CustomerDetails,
-      },
-      {
-        path: "devices",
-        Component: Devices,
-      },
-      {
-        path: "service-requests",
-        Component: ServiceRequests,
-      },
-
-      {
-        path: "warranty",
-        Component: Warranty,
-      },
-
-      {
-        path: "interactions",
-        Component: Interactions,
-      },
-      {
-        path: "follow-ups",
-        Component: FollowUps,
-      },
-      {
-        path: "settings",
-        Component: Settings,
-      },
-      {
-        path: "profile",
-        Component: Profile,
-      },
+      { index: true, Component: Dashboard },
+      { path: "customers", Component: Customers },
+      { path: "customers/add", Component: AddCustomer },
+      { path: "customers/:id", Component: CustomerDetails },
+      { path: "devices", Component: Devices },
+      { path: "service-requests", Component: ServiceRequests },
+      { path: "warranty", Component: Warranty },
+      { path: "interactions", Component: Interactions },
+      { path: "follow-ups", Component: FollowUps },
+      { path: "settings", Component: Settings },
+      { path: "profile", Component: Profile },
     ],
   },
 

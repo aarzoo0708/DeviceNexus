@@ -1,6 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-background: var(--background);
+  --color-sidebar: var(--sidebar);
+  --color-navbar: var(--navbar);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-border-light: var(--border-light);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+}
 
 :root {
+  color-scheme: light;
   /* Brand */
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
@@ -8,12 +28,15 @@
 
   /* Backgrounds */
   --background: #f8fafc;
+  --sidebar: #ffffff;
+  --sidebar-hover: #f1f5f9;
+  --navbar: #ffffff;
   --surface: #ffffff;
   --surface-hover: #f1f5f9;
 
   /* Text */
   --text-primary: #0f172a;
-  --text-secondary: #475569;
+  --text-secondary: #64748b;
   --text-muted: #94a3b8;
 
   /* Borders */
@@ -23,46 +46,43 @@
   /* Status */
   --success: #16a34a;
   --success-light: #f0fdf4;
+  --success-text: #166534;
 
   --warning: #f59e0b;
   --warning-light: #fffbeb;
+  --warning-text: #92400e;
 
   --danger: #dc2626;
   --danger-light: #fef2f2;
+  --danger-text: #991b1b;
 
   --info: #0ea5e9;
   --info-light: #f0f9ff;
+  --info-text: #1d4ed8;
+  --default-text: #475569;
 
   /* Layout */
-  --sidebar-width: 250px;
-  --navbar-height: 68px;
+  --sidebar-width: 245px;
+  --sidebar-collapsed-width: 68px;
+  --navbar-height: 64px;
 
   /* Radius */
   --radius-sm: 6px;
   --radius-md: 10px;
-  --radius-lg: 14px;
+  --radius-lg: 12px;
 
   /* Shadows */
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-
-  --shadow-md:
-    0 4px 12px rgba(15, 23, 42, 0.08);
-
-  --shadow-lg:
-    0 10px 30px rgba(15, 23, 42, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.1);
 
   /* Transition */
-  --transition: 0.2s ease;
-
-  /* Badge Texts */
-  --success-text: #166534;
-  --warning-text: #92400e;
-  --danger-text: #991b1b;
-  --info-text: #1d4ed8;
-  --default-text: #475569;
+  --transition: 0.15s ease;
 }
 
+.dark,
 [data-theme="dark"] {
+  color-scheme: dark;
   /* Brand */
   --primary: #3b82f6;
   --primary-hover: #60a5fa;
@@ -70,48 +90,51 @@
 
   /* Backgrounds */
   --background: #0f172a;
+  --sidebar: #0f172a;
+  --sidebar-hover: #151f33;
+  --navbar: #1e293b;
   --surface: #1e293b;
-  --surface-hover: #334155;
+  --surface-hover: #273449;
 
   /* Text */
   --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
 
   /* Borders */
   --border: #334155;
-  --border-light: #1e293b;
+  --border-light: #293548;
 
   /* Status */
   --success: #22c55e;
-  --success-light: rgba(34, 197, 94, 0.2);
+  --success-light: rgba(34, 197, 94, 0.15);
+  --success-text: #4ade80;
 
   --warning: #f59e0b;
-  --warning-light: rgba(245, 158, 11, 0.2);
+  --warning-light: rgba(245, 158, 11, 0.15);
+  --warning-text: #fbbf24;
 
   --danger: #ef4444;
-  --danger-light: rgba(239, 68, 68, 0.2);
+  --danger-light: rgba(239, 68, 68, 0.15);
+  --danger-text: #f87171;
 
   --info: #38bdf8;
-  --info-light: rgba(56, 189, 248, 0.2);
-
-  /* Badge Texts */
-  --success-text: #4ade80;
-  --warning-text: #fbbf24;
-  --danger-text: #f87171;
+  --info-light: rgba(56, 189, 248, 0.15);
   --info-text: #7dd3fc;
   --default-text: #cbd5e1;
 
   /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
 }
 
 /* =========================
-   RESET
+   RESET & BASE
 ========================= */
 
+/* Keep element defaults below Tailwind utilities in the cascade. */
+@layer base {
 * {
   margin: 0;
   padding: 0;
@@ -123,14 +146,15 @@ html {
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background: var(--background);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--background);
   color: var(--text-primary);
   line-height: 1.5;
+  transition: background-color var(--transition), color var(--transition);
 }
 
 /* =========================
-   GLOBAL ELEMENTS
+   FORM CONTROLS & GLOBAL ELEMENTS
 ========================= */
 
 button,
@@ -138,6 +162,7 @@ input,
 select,
 textarea {
   font: inherit;
+  color: inherit;
 }
 
 button {
@@ -159,12 +184,21 @@ img {
   display: block;
 }
 
+/* Consistent form inputs */
+input,
+select,
+textarea {
+  background-color: var(--surface);
+  color: var(--text-primary);
+}
+
 /* =========================
    SCROLLBAR
 ========================= */
 
 ::-webkit-scrollbar {
-  width: 7px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -172,12 +206,12 @@ img {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
+  background: var(--border);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--text-muted);
 }
 
 /* =========================
@@ -186,5 +220,52 @@ img {
 
 ::selection {
   background: var(--primary);
-  color: white;
+  color: #ffffff;
+}
+}
+
+
+/* Explicit feedback only for actionable rows/cards, never static panels. */
+.ui-clickable {
+  cursor: pointer;
+  transition: background-color 150ms ease, box-shadow 150ms ease;
+}
+.ui-clickable:hover,
+.ui-clickable:focus-visible {
+  background-color: var(--primary-light);
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+.ui-clickable:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+@layer base {
+  button:not(:disabled):hover { filter: brightness(1.1); }
+  button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-clickable { transition: none; }
+}
+
+/* Repeated UI styles live here; page JSX keeps only layout-specific classes. */
+@layer components {
+  .modal-backdrop {
+    @apply fixed inset-0 z-2000 flex items-center justify-center p-4 bg-slate-900/70;
+  }
+
+  .form-control {
+    @apply w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-[#334155] bg-white dark:bg-[#0f172a] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors;
+  }
+
+  .field-label {
+    @apply block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5;
+  }
+
+  .panel {
+    @apply bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-[#334155] rounded-2xl;
+  }
+
 }
